@@ -4,6 +4,26 @@ import Credentials from "next-auth/providers/credentials";
 import Facebook from "next-auth/providers/facebook";
 import Google from "next-auth/providers/google";
 import { jwtDecode } from 'jwt-decode';
+import type { DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface User {
+    credentialToken?: string;
+    id?: string;
+  }
+  interface Session {
+    user: {
+      id?: string;
+    } & DefaultSession["user"];
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    routeToken?: string;
+    id?: string;
+  }
+}
 
 export const nextAuthConfig: NextAuthOptions = {
   providers: [
