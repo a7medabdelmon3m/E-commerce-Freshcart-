@@ -118,7 +118,7 @@ export default async function ProductDetails({
               </div>
             </div>
             <div className="lg:w-3/4">
-              <ProductDetailsCard productDetails={productDetails}/>
+              <ProductDetailsCard productDetails={productDetails!}/>
             </div>
           </div>
         </div>
