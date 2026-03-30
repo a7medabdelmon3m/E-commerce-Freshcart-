@@ -1,5 +1,5 @@
 "use client";
-import { useCartContext } from "@/app/_context/CartContext";
+import { cartContextType, useCartContext } from "@/app/_context/CartContext";
 import { addToCart } from "@/app/cart/cart.actions";
 import { Button } from "@/components/ui/button";
 import { Span } from "next/dist/trace";
@@ -21,7 +21,7 @@ export default function AddToCartButton({
 }: prop) {
   const [isLoading, setisLoading] = useState(false);
   const [isSuccess, setisSuccess] = useState(false);
-  const {updateNumOfCartItems} =useCartContext()
+  const {updateNumOfCartItems} =useCartContext() as cartContextType
 
   async function handleAddToCart() {
     if (isLoading) return;
