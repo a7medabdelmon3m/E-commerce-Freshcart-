@@ -1,12 +1,12 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function proxy(req:NextRequest){
-const token =await getToken({req ,secret:process.env.NEXTAUTH_SECRET})
-// console.log('el secret key ' , process.env.NEXTAUTH_SECRET );
+export async function proxy(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // console.log('el secret key ' , process.env.NEXTAUTH_SECRET );
   const { pathname } = req.nextUrl;
 
-if (token && (pathname === "/login" || pathname === "/register")) {
+  if (token && (pathname === "/login" || pathname === "/register")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -14,8 +14,8 @@ if (token && (pathname === "/login" || pathname === "/register")) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/login`)
+  return NextResponse.next();
 }
 export const config = {
-      matcher: ["/cart", "/login", "/register"],
-}
+  matcher: ["/cart", "/login", "/register"],
+};
