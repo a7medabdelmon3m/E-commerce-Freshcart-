@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { decodeAuthanticationUserToken } from "../utils";
 
 export async function addToCart(id: string) {
-  const tokenValue = await decodeAuthanticationUserToken();
+    const tokenValue = (await decodeAuthanticationUserToken())?.token;
   if (tokenValue) {
     try {
       const resp = await fetch(`https://ecommerce.routemisr.com/api/v1/cart`, {
@@ -25,7 +25,7 @@ export async function addToCart(id: string) {
 }
 
 export async function deleteCartItem(id: string) {
-  const tokenValue = await decodeAuthanticationUserToken();
+    const tokenValue = (await decodeAuthanticationUserToken())?.token;
 
   if (tokenValue) {
     try {
@@ -53,7 +53,7 @@ export async function deleteCartItem(id: string) {
   }
 }
 export async function updateCount(id: string, newCount: number) {
-  const tokenValue = await decodeAuthanticationUserToken();
+    const tokenValue = (await decodeAuthanticationUserToken())?.token;
 
   if (tokenValue) {
     try {
@@ -83,7 +83,7 @@ export async function updateCount(id: string, newCount: number) {
   }
 }
 export async function clearUserCart() {
-  const tokenValue = await decodeAuthanticationUserToken();
+    const tokenValue = (await decodeAuthanticationUserToken())?.token;
 
   if (tokenValue) {
     try {

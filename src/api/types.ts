@@ -1,3 +1,5 @@
+import { CheckoutValues } from "@/app/checkout/checkout.schema";
+
 export interface productType {
   sold: number;
   id: string;
@@ -52,7 +54,6 @@ export interface cartItemType {
   _id: string;
   cartOwner: string;
   products: productItemType[];
-
   totalCartPrice: number;
 }
 export interface productItemType {
@@ -61,3 +62,16 @@ export interface productItemType {
   product: productType;
   price: number;
 }
+export interface orderType {
+  shippingAddress: CheckoutValues;
+  taxPrice: number;
+  shippingPrice: number;
+  totalOrderPrice: number;
+  paymentMethodType: string;
+  isPaid: boolean;
+  isDelivered: boolean;
+  cartItems:productItemType[];
+  createdAt:string;
+  id:string
+}
+

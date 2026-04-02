@@ -41,13 +41,16 @@ import { cartItemType } from "@/api/types";
 import { LuLoaderCircle } from "react-icons/lu";
 import { toast } from "react-toastify";
 import { string } from "zod";
+import { useRouter } from "next/navigation";
+import { cartContextType, useCartContext } from "../_context/CartContext";
 export type prop = {
   cartItems: cartItemType | undefined;
 };
 export default function CheckoutClient({ cartItems }: prop) {
   const [isLoading, setisLoading] = useState(false);
-  const [paymentMethod, setpaymentMethod] = useState('cash')
-
+  const [paymentMethod, setpaymentMethod] = useState("cash");
+  const router = useRouter();
+const {updateNumOfCartItems} = useCartContext() as cartContextType
   const {
     register,
     handleSubmit,
@@ -73,19 +76,34 @@ export default function CheckoutClient({ cartItems }: prop) {
     // };
     setisLoading(true);
     try {
-      const resp =  paymentMethod === 'cash'? await createCashOrder(cartItems?._id||'',data ) :await createOnlneOrder(cartItems?._id||'',data) ;
-      if(paymentMethod === 'online'){
-        if(typeof resp === 'string'){
-          window.open(resp ,'_self') 
-        return       }
-      }else{
-        toast.error("Failed to generate payment link")
+      setisLoading(true);
+      const res =
+        paymentMethod === "cash"
+          ? await createCashOrder(cartItems?._id || "", data)
+          : await createOnlneOrder(cartItems?._id || "", data);
+
+      if (paymentMethod === "cash") {
+        if (res.success) {
+          
+          toast.success("Order Placed Successfully");
+          updateNumOfCartItems(0)
+          router.push("/orders");
+        } else {
+         
+          throw new Error(res.message);
+        }
+      } else {
+        
+        if (typeof res === "string") {
+          window.open(res, "_self");
+        } else {
+          throw new Error("Payment link not found");
+        }
       }
-      setisLoading(false);
-      toast.success('Order Placed Successfully')
     } catch (error) {
-      console.error(error);
-      toast.error(`${error}`)
+      console.error("Order Error:", error);
+      
+      toast.error('failed to place order');
     } finally {
       setisLoading(false);
     }
@@ -323,29 +341,46 @@ export default function CheckoutClient({ cartItems }: prop) {
                     </p>
                   </div>
                   <div className="p-6 space-y-4">
-
-                    <Button onClick={() =>setpaymentMethod('cash')} className={`h-auto! whitespace-normal text-start flex gap-4 justify-start p-5 rounded-xl border-2 w-full shadow-[0px_1px_2px_-px_#0000001A,0px_1px_3px_0px_#0000001A] ${paymentMethod === 'cash' ?'bg-gradient-to-r from-green-50 to-blue-50 border-main-color':'bg-transparent border-[#E5E7EB]'}`}>
-                      <div className={`w-14 h-14 shrink-0 flex items-center justify-center rounded-xl text-xl ${paymentMethod === 'cash'?'bg-linear-to-br from-[#22C55E] to-main-color text-white':'bg-[#F3F4F6] text-[#99A1AF]'} `}>
+                    <Button
+                      onClick={() => setpaymentMethod("cash")}
+                      className={`h-auto! whitespace-normal text-start flex gap-4 justify-start p-5 rounded-xl border-2 w-full shadow-[0px_1px_2px_-px_#0000001A,0px_1px_3px_0px_#0000001A] ${paymentMethod === "cash" ? "bg-gradient-to-r from-green-50 to-blue-50 border-main-color" : "bg-transparent border-[#E5E7EB]"}`}
+                    >
+                      <div
+                        className={`w-14 h-14 shrink-0 flex items-center justify-center rounded-xl text-xl ${paymentMethod === "cash" ? "bg-linear-to-br from-[#22C55E] to-main-color text-white" : "bg-[#F3F4F6] text-[#99A1AF]"} `}
+                      >
                         <FaMoneyBill />
                       </div>
                       <div className="flex flex-col flex-wrap gap-0.5 flex-1 ">
-                        <h3 className={` font-bold ${paymentMethod === 'cash'?'text-main-color':'text-[#101828]'}`}>
+                        <h3
+                          className={` font-bold ${paymentMethod === "cash" ? "text-main-color" : "text-[#101828]"}`}
+                        >
                           Cash on Delivery
                         </h3>
                         <p className="text-sm leading-5 font-medium text-text-color">
                           Pay when your order arrives at your doorstep
                         </p>
                       </div>
-                      <div className={`flex shrink-0 items-center justify-center rounded-full border-2  w-7 h-7 text-white ${paymentMethod === 'cash' ?'border-main-color bg-main-color':'border-[#E5E7EB]'}` }>
-                        {paymentMethod === 'cash'?<FaCheck />:''}
+                      <div
+                        className={`flex shrink-0 items-center justify-center rounded-full border-2  w-7 h-7 text-white ${paymentMethod === "cash" ? "border-main-color bg-main-color" : "border-[#E5E7EB]"}`}
+                      >
+                        {paymentMethod === "cash" ? <FaCheck /> : ""}
                       </div>
                     </Button>
-                    <Button onClick={() => setpaymentMethod('online')} className={`h-auto! whitespace-normal text-start flex gap-4 justify-start p-5 rounded-xl border-2  ${paymentMethod === 'online'?'bg-gradient-to-r from-green-50 to-blue-50 border-main-color':'bg-transparent border-[#E5E7EB]'}  w-full shadow-[0px_1px_2px_-px_#0000001A,0px_1px_3px_0px_#0000001A]`}>
-                      <div className={`w-14 h-14 shrink-0 flex items-center justify-center rounded-xl  text-xl ${paymentMethod === 'online'?'bg-gradient-to-br from-green-500 to-blue-600 text-white shadow-green-500/30':'bg-[#F3F4F6] text-[#99A1AF]'}`}>
+                    <Button
+                      onClick={() => setpaymentMethod("online")}
+                      className={`h-auto! whitespace-normal text-start flex gap-4 justify-start p-5 rounded-xl border-2  ${paymentMethod === "online" ? "bg-gradient-to-r from-green-50 to-blue-50 border-main-color" : "bg-transparent border-[#E5E7EB]"}  w-full shadow-[0px_1px_2px_-px_#0000001A,0px_1px_3px_0px_#0000001A]`}
+                    >
+                      <div
+                        className={`w-14 h-14 shrink-0 flex items-center justify-center rounded-xl  text-xl ${paymentMethod === "online" ? "bg-gradient-to-br from-green-500 to-blue-600 text-white shadow-green-500/30" : "bg-[#F3F4F6] text-[#99A1AF]"}`}
+                      >
                         <FaCreditCard />
                       </div>
                       <div className="flex flex-col gap-0.5 flex-1 ">
-                        <h3 className={`font-bold ${paymentMethod === 'online' ? 'text-main-color':'text-[#101828]'}`}>Pay Online</h3>
+                        <h3
+                          className={`font-bold ${paymentMethod === "online" ? "text-main-color" : "text-[#101828]"}`}
+                        >
+                          Pay Online
+                        </h3>
                         <p className="text-sm leading-5 font-medium text-text-color ">
                           Secure payment with Credit/Debit Card via Stripe
                         </p>
@@ -376,8 +411,10 @@ export default function CheckoutClient({ cartItems }: prop) {
                           </div>
                         </div>
                       </div>
-                      <div className={`flex shrink-0 items-center justify-center rounded-full border-2  w-7 h-7 text-white ${paymentMethod === 'online' ?'border-main-color bg-main-color':'border-[#E5E7EB]'}` }>
-                        {paymentMethod === 'online'?<FaCheck />:''}
+                      <div
+                        className={`flex shrink-0 items-center justify-center rounded-full border-2  w-7 h-7 text-white ${paymentMethod === "online" ? "border-main-color bg-main-color" : "border-[#E5E7EB]"}`}
+                      >
+                        {paymentMethod === "online" ? <FaCheck /> : ""}
                       </div>
                     </Button>
                     <div className="flex items-center gap-3 p-4 rounded-xl border border-main-color-subtle bg-linear-to-r from-[#F0FDF4] to-[#F3F4F6] ">
@@ -428,11 +465,7 @@ export default function CheckoutClient({ cartItems }: prop) {
                               {item.product.title}
                             </p>
                             <p className="text-xs font-medium leading-4 text-text-color">
-                              {item.count} ×{" "}
-                              {item.product.priceAfterDiscount
-                                ? item.product.priceAfterDiscount
-                                : item.product.price}{" "}
-                              EGP
+                              {item.count} × {item.price} EGP
                             </p>
                           </div>
                           <p className="text-sm leading-5 font-bold text-[#101828]">
@@ -474,7 +507,7 @@ export default function CheckoutClient({ cartItems }: prop) {
                       </div>
                     </div>
                     <Button
-                    disabled ={isLoading}
+                      disabled={isLoading}
                       type="submit"
                       form="checkoutForm"
                       className="flex w-full h-auto gap-3 mb-6 items-center justify-center rounded-xl py-4 px-6 bg-linear-to-r from-[#16A34A] to-[#15803D] shadow-[0px_4px_6px_-4px_#16A34A33,0px_10px_15px_-3px_#16A34A33] text-white font-semibold hover:from-[#157F3D] hover:to-[#14532D] transition-all duration-300"

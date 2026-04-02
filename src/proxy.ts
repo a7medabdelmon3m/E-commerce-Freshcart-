@@ -10,12 +10,12 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (!token && pathname.startsWith("/cart")) {
+  if (!token && (pathname.startsWith("/cart") || pathname.startsWith("/orders"))) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/cart", "/login", "/register"],
+  matcher: ["/cart", "/login", "/register", "/orders"],
 };

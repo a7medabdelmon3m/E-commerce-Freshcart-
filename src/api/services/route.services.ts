@@ -1,5 +1,6 @@
+import { id } from 'zod/locales';
 import { decodeAuthanticationUserToken } from "@/app/utils";
-import { cartItemType, productCategory, productType } from "../types";
+import { cartItemType, orderType, productCategory, productType } from "../types";
 import { log } from "console";
 
 export async function getAllProducts(): Promise<productType[] | undefined> {
@@ -44,7 +45,7 @@ export async function getAllCategories(): Promise<
 }
 export async function getCartItems(): Promise<cartItemType| undefined > {
   // await new Promise((resolve) => setTimeout(resolve, 10000));
-  const tokenValue = await decodeAuthanticationUserToken();
+  const tokenValue = (await decodeAuthanticationUserToken())?.token;
   if (tokenValue) {
     // console.log('da el token ',tokenValue);
     
@@ -65,3 +66,29 @@ export async function getCartItems(): Promise<cartItemType| undefined > {
     return undefined;
   }
 }
+export async function getUserOrders(): Promise<orderType[] | undefined> {
+  const obj = await decodeAuthanticationUserToken();
+  const id = obj?.userId;
+
+  if (!id) return;
+
+  try {
+    const resp = await fetch(
+      `https://ecommerce.routemisr.com/api/v1/orders/user/${id}`
+    );
+
+    if (!resp.ok) {
+      throw new Error("Failed to fetch orders");
+    }
+
+    const finalData = await resp.json();
+
+    console.log("orders:", finalData);
+
+    return finalData;
+  } catch (error) {
+    console.log("error:", error);
+    return undefined;
+  }
+}
+// https://ecommerce.routemisr.com/api/v1/orders/user/6407cf6f515bdcf347c09f17
