@@ -15,10 +15,28 @@ import { useRouter } from "next/navigation";
 import { FaFacebook, FaGoogle, FaSpinner, FaUserPlus } from "react-icons/fa";
 import Link from "next/link";
 // import * as z from 'zod'
+function getStrength(password:string){
+let score = 0 ; 
+if(password.length >= 8) score += 20 
+if(password.length >= 12) score += 10 
+if(password.length >= 16) score += 10
+if(/[A-Z]/.test(password)) score += 15
+if(/[a-z]/.test(password)) score += 10 
+if(/\d/.test(password)) score += 15 
+if(/[@$!%*?&]/.test(password)) score += 20 
 
+  return score
+
+}
+function getPasswordStyling(score:number){
+  if (score < 40 ) return {width:score , color:'#FB2C36',word:'Weak'}
+  if (score < 60 ) return {width:score , color:'#FF6900',word:'Fair'}
+  if (score < 80 ) return {width:score , color:'#2B7FFF',word:'Good'}
+  if (score <= 100 ) return {width:score , color:'#00C950',word:'Strong'}
+}
 export default function RegisterForm() {
   const router = useRouter();
-  const { handleSubmit, control ,formState:{isSubmitting} } = useForm({
+  const {watch, handleSubmit, control ,formState:{isSubmitting} } = useForm({
     defaultValues: {
       name: "",
       email: "",
@@ -57,6 +75,9 @@ export default function RegisterForm() {
       });
     }
   }
+  const passwordValue = watch("password", ""); 
+  const passwordStrength = getStrength(passwordValue) ;
+  const passwordStyle = getPasswordStyling(passwordStrength) ;
 
   return (
     <div className="container min-w-100 mx-auto  py-10 px-6 rounded-2xl flex flex-col gap-2 bg-white shadow-[0px_4px_6px_-4px_#0000001A,0px_10px_15px_-3px_#0000001A] text-[#364153]">
@@ -182,9 +203,11 @@ export default function RegisterForm() {
               )}
               <div>
                 <div className="flex gap-2 items-center">
-                  <div className="h-1 w-full rounded-md bg-[#E5E7EB]"></div>
+                  <div className={`h-1 w-full rounded-md bg-[#E5E7EB]`}>
+                    <div className="h-full transition-all duration-500 ease-in-out" style={{backgroundColor:`${passwordStyle?.color}` || "#E5E7EB" , width:`${passwordStyle?.width || 0 }%`}}></div>
+                  </div>
                   <span className="text-[14px] leading-5 font-medium text-[#364153] pr-4">
-                    Weak
+                    {passwordStyle?.word || "Weak" }
                   </span>
                 </div>
                 <p className="text-text-color font-medium text-[12px] leading-4 ">
