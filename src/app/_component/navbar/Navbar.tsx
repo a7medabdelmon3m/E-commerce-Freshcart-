@@ -21,6 +21,7 @@ import {
   FaPhoneAlt,
   FaShoppingCart,
   FaTruck,
+  FaUser,
   FaUserPlus,
 } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
@@ -37,9 +38,14 @@ import { Button } from "@/components/ui/button";
 import { MdLogout } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { cartContext, cartContextType, useCartContext } from "@/app/_context/CartContext";
+import {
+  cartContext,
+  cartContextType,
+  useCartContext,
+} from "@/app/_context/CartContext";
 import { UploadCloud } from "lucide-react";
 import { getNumOfICartitems } from "@/app/(auth)/login/login.action";
+import { FaRightFromBracket } from "react-icons/fa6";
 
 export default function NavigationMenuDemo() {
   const router = useRouter();
@@ -48,9 +54,10 @@ export default function NavigationMenuDemo() {
   const session = useSession();
   const userName = session.data?.user?.name;
   const isAuthanticated = session.status === "authenticated";
-  const {numberOfCartItems ,updateNumOfCartItems} =(useCartContext() as cartContextType)
+  const { numberOfCartItems, updateNumOfCartItems } =
+    useCartContext() as cartContextType;
   // console.log(numberOfCartItems);
-  
+
   return (
     <>
       <div className="border-y border-[#F3F4F6]  hidden lg:block ">
@@ -117,8 +124,8 @@ export default function NavigationMenuDemo() {
                   <span
                     onClick={async () => {
                       await signOut({ redirect: false });
-                     const resp = await  getNumOfICartitems()
-                      updateNumOfCartItems(resp?.products.length as number)
+                      const resp = await getNumOfICartitems();
+                      updateNumOfCartItems(resp?.products.length as number);
                       router.push("/");
                     }}
                     className="flex cursor-pointer gap-1.5 items-center text-text-color hover:text-main-color"
@@ -313,28 +320,30 @@ export default function NavigationMenuDemo() {
                   <Link href="/cart">
                     <div className="relative flex items-center justify-center w-11.25 h-11.25 rounded-full text-text-color hover:bg-[#F3F4F6] hover:text-main-color">
                       <FaShoppingCart className="text-[25px] leading-5" />
-                      {
-                        numberOfCartItems > 0 && <div className="absolute w-5 h-5 bg-main-color flex items-center justify-center rounded-full top-0 right-0 text-[10px] leading-3.75 font-bold text-white border-2 border-white ">
-                        {numberOfCartItems}
-                      </div>
-                      }
+                      {numberOfCartItems > 0 && (
+                        <div className="absolute w-5 h-5 bg-main-color flex items-center justify-center rounded-full top-0 right-0 text-[10px] leading-3.75 font-bold text-white border-2 border-white ">
+                          {numberOfCartItems}
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <NavigationMenuItem className="hidden lg:flex">
-                <NavigationMenuLink asChild>
-                  <Link href="/">
-                    <div className="flex items-center justify-center gap-2 py-2.5 px-5 rounded-[33554400px] bg-main-color text-white font-semibold text-sm leading-5 hover:bg-main-color-hover">
-                      <span>
-                        <FiUser />
-                      </span>
-                      <span>Sign in</span>
-                    </div>
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+              {!isAuthanticated && (
+                <NavigationMenuItem className="hidden lg:flex">
+                  <NavigationMenuLink asChild>
+                    <Link href="/login">
+                      <div className="flex items-center justify-center gap-2 py-2.5 px-5 rounded-[33554400px] bg-main-color text-white font-semibold text-sm leading-5 hover:bg-main-color-hover">
+                        <span>
+                          <FiUser />
+                        </span>
+                        <span>Sign in</span>
+                      </div>
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
 
               <NavigationMenuItem className="lg:hidden">
                 <Button
@@ -382,28 +391,28 @@ export default function NavigationMenuDemo() {
           <SidebarGroup className="px-4">
             <div className="py-4">
               <ul>
-                <li className="px-3 py-4 font-medium leading-6 rounded-3 hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
+                <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
                   <Link href="/">Home</Link>
                 </li>
-                <li className="px-3 py-4 font-medium leading-6 rounded-3 hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
+                <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
                   <Link href="/">Shop</Link>
                 </li>
-                <li className="px-3 py-4 font-medium leading-6 rounded-3  hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300">
+                <li className="px-3 py-4 font-medium leading-6 rounded-xl  hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300">
                   <Link href="/">Categories</Link>
                 </li>
-                <li className="px-3 py-4 font-medium leading-6 rounded-3 hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
+                <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
                   <Link href="/">Brands</Link>
                 </li>
               </ul>
             </div>
           </SidebarGroup>
           <SidebarGroup className="px-4">
-            <div className="h-px border-t border-[#F3F4F6]"></div>
+            <div className="h-px border-t border-[#d6d6d7]"></div>
           </SidebarGroup>
           <SidebarGroup className="p-4">
             <div className="flex flex-col gap-1">
               <ul>
-                <li className="px-3 py-4 font-medium leading-6 rounded-3 hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
+                <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
                   <Link href="/">
                     <div className="flex gap-3 items-center">
                       <div className="bg-[#FEF2F2] w-9 h-9 rounded-full flex items-center justify-center">
@@ -416,16 +425,18 @@ export default function NavigationMenuDemo() {
                     </div>
                   </Link>
                 </li>
-                <li className=" px-3 py-4 font-medium leading-6 rounded-3 hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
-                  <Link href="/">
+                <li className=" px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
+                  <Link href="/cart">
                     <div className="flex gap-3 items-center">
                       <div className="bg-[#F0FDF4] w-9 h-9 rounded-full flex items-center justify-center">
                         <FaShoppingCart color="#16A34A" />
                       </div>
                       <span className="font-medium leading-6">Cart</span>
-                      <div className=" ml-auto w-6 h-6 rounded-full py-1 px-2.5 flex items-center justify-center bg-main-color text-white font-bold text-[12px] leading-4">
-                        5
+                      {numberOfCartItems >= 1 &&
+                        <div className=" ml-auto w-6 h-6 rounded-full py-1 px-2.5 flex items-center justify-center bg-main-color text-white font-bold text-[12px] leading-4">
+                        {numberOfCartItems}
                       </div>
+                      }
                     </div>
                   </Link>
                 </li>
@@ -433,24 +444,64 @@ export default function NavigationMenuDemo() {
             </div>
           </SidebarGroup>
           <SidebarGroup className="px-4">
-            <div className="h-px border-t border-[#F3F4F6]"></div>
+            <div className="h-px border-t border-[#d6d6d7]"></div>
           </SidebarGroup>
-          <SidebarGroup className="px-4 py-6">
-            <div className="flex gap-3">
-              <Link
-                href={`/login/`}
-                className="rounded-xl h-auto flex-1 bg-main-color px-4 pt-[13.5px] pb-[14.5px] text-center text-[16px] font-semibold leading-6 text-white hover:bg-[#15803D]"
-              >
-                Sign In
-              </Link>
-              <Link
-                href={`/register/`}
-                className="rounded-xl h-auto flex-1 border-2 border-main-color  px-4 pt-[13.5px] pb-[14.5px] text-center text-[16px] font-semibold leading-6 text-main-color hover:bg-[#F0FDF4]"
-              >
-                Sign Up
-              </Link>
-            </div>
-          </SidebarGroup>
+          {isAuthanticated ? (
+            <SidebarGroup className="p-4">
+              <div className="flex flex-col gap-1">
+                <ul>
+                  <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
+                    <Link href="/">
+                      <div className="flex gap-3 items-center">
+                        <div className="bg-gray-100 text-gray-500 w-9 h-9 rounded-full flex items-center justify-center">
+                          <FiUser />
+                        </div>
+                        <span className="font-medium leading-6">Ahmed</span>
+                      </div>
+                    </Link>
+                  </li>
+                  <li className=" px-3 py-4 font-medium leading-6 rounded-xl hover:bg-red-50 hover:text-main-color transition-colors duration-300 ">
+                    <Button
+                      onClick={async () => {
+                        await signOut({ redirect: false });
+                        const resp = await getNumOfICartitems();
+                        updateNumOfCartItems(resp?.products.length as number);
+                        router.push("/");
+                      }}
+                      className="p-0"
+                    >
+                      <div className="flex gap-3 items-center">
+                        <div className="bg-red-50 text-[#FB2C36] w-9 h-9 rounded-full flex items-center justify-center">
+                          <FaRightFromBracket />
+                        </div>
+                        <span className="font-medium leading-6 text-[#FB2C36]">
+                          Sign Out
+                        </span>
+                      </div>
+                    </Button>
+                  </li>
+                </ul>
+              </div>
+            </SidebarGroup>
+          ) : (
+            <SidebarGroup className="px-4 py-6">
+              <div className="flex gap-3">
+                <Link
+                  href={`/login/`}
+                  className="rounded-xl h-auto flex-1 bg-main-color px-4 pt-[13.5px] pb-[14.5px] text-center text-[16px] font-semibold leading-6 text-white hover:bg-[#15803D]"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href={`/register/`}
+                  className="rounded-xl h-auto flex-1 border-2 border-main-color  px-4 pt-[13.5px] pb-[14.5px] text-center text-[16px] font-semibold leading-6 text-main-color hover:bg-[#F0FDF4]"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </SidebarGroup>
+          )}
+
           <SidebarGroup className="px-4">
             <div className="bg-[#F9FAFB] flex gap-3 rounded-xl  border border-[#F3F4F6] p-4 hover:bg-[#F0FDF4] ">
               <div className="w-10 h-10 bg-main-color-subtle text-main-color rounded-full flex items-center justify-center ">
