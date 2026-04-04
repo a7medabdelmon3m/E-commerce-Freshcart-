@@ -46,7 +46,7 @@ export default async function RootLayout({
                 <Toaster />
                 <main className="w-full">{children}</main>
                 <section className="border-y border-main-color-subtle bg-[#F0FDF4]">
-                  <div className="container mx-auto py-6 ">
+                  <div className="container mx-auto px-4 py-6 ">
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                       <div className="flex gap-3 items-center">
                         <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-main-color-subtle text-main-color">

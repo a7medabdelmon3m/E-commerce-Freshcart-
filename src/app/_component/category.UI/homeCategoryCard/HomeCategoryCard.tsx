@@ -6,7 +6,7 @@ import { productCategory } from '@/api/types'
 type props ={
   categoryData : productCategory
 }
-export default function CategoryCard({categoryData}:props) {
+export default function HomeCategoryCard({categoryData}:props) {
   return (
     <div className='flex flex-col p-4 rounded-lg justify-center items-center gap-3 shadow-[0_1px_2px_-1px_rgba(0,0,0,0.1),0_1px_3px_0_rgba(0,0,0,0.1)] hover:shadow-md'>
         <div className='relative w-20 h-20 rounded-full overflow-hidden flex items-center justify-center  bg-main-color-subtle'>

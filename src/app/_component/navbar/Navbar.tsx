@@ -203,7 +203,7 @@ export default function NavigationMenuDemo() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className="hover:text-main-color">
-                  <Link href="/">Shop</Link>
+                  <Link href="/products">Shop</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
@@ -217,7 +217,7 @@ export default function NavigationMenuDemo() {
                     <li className="hover:bg-main-color-subtle">
                       <NavigationMenuLink asChild>
                         <Link
-                          href="/docs"
+                          href="/categories"
                           className="block select-none rounded-md py-2 px-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">
@@ -395,7 +395,7 @@ export default function NavigationMenuDemo() {
                   <Link href="/">Home</Link>
                 </li>
                 <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
-                  <Link href="/">Shop</Link>
+                  <Link href="/products">Shop</Link>
                 </li>
                 <li className="px-3 py-4 font-medium leading-6 rounded-xl  hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300">
                   <Link href="/">Categories</Link>
