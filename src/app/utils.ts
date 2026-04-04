@@ -18,7 +18,7 @@ export async function decodeAuthanticationUserToken(): Promise<{
   });
 
   if (jwtRes) {
-    console.log("da el user id ya 3am", jwtRes.id);
+    // console.log("da el user id ya 3am", jwtRes.id);
 
     return { token: jwtRes.routeToken, userId: jwtRes.id };
   } else {

@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import {
   FaRegHeart,
+  FaRegStar,
   FaShareAlt,
   FaShoppingCart,
   FaStar,
@@ -46,11 +47,18 @@ export default function ProductDetailsCard({
         </h1>
         <div className="flex gap-3 items-center mb-4">
           <div className="flex text-yellow-400 pt-0.75 pb-1.25">
-            <FaStar />
-            <FaStar />
-            <FaStar />
-            <FaStar />
-            <FaStarHalfAlt />
+            {Array.from({ length: 5 }).map((_, i) =>
+                          Math.floor(productDetails?.ratingsAverage) >= i + 1 ? (
+                            <span key={i}>
+                              <FaStar />
+                            </span>
+                          ) : productDetails?.ratingsAverage % 1 >= 0.5 &&
+                            Math.floor(productDetails?.ratingsAverage) === i ? (
+                            <FaStarHalfAlt />
+                          ) : (
+                            <FaRegStar />
+                          ),
+                        )}
           </div>
           <span className="text-sm font-medium text-[#4A5565]">
             {productDetails?.ratingsAverage} ({productDetails?.ratingsQuantity}{" "}

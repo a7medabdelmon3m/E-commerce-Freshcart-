@@ -55,10 +55,15 @@ export default async function ProductDetails({
   // console.log('my id : ' , id);
   const productDetails = await getProductDetails(id);
   const allProducts = await getAllProducts();
+  
   const relatedCategories = allProducts?.filter(
-    (pro) => pro.category.name === productDetails?.category.name || [],
-  );
-  console.log("de el produact details ", productDetails);
+    (pro) => 
+      pro.category.name === productDetails?.category.name && 
+      pro.id !== productDetails.id 
+  ) || [];
+  // console.log( 'da el all products: ',relatedCategories);
+
+  // console.log("de el produact details ", productDetails);
   function calcRatingForStars(numOfStars: number): number {
     const reviews = productDetails?.reviews || [] ;
      const ratingQuantity = productDetails?.ratingsQuantity || 0

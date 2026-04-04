@@ -57,7 +57,7 @@ export async function getCartItems(): Promise<cartItemType| undefined > {
         }
       });
       const finalData = await resp.json();
-      console.log("el cart items :", finalData.data);
+      // console.log("el cart items :", finalData.data);
       return finalData.data;
     } catch (error) {
       console.log("error : ", error);

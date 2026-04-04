@@ -42,6 +42,8 @@ import ProductCard from "@/app/_component/productCard/ProductCard";
 // import Image from 'next/image';
 
 export default function RelatedProductSwiper({listOfRelatedProducts}:{listOfRelatedProducts:productType[]}) {
+    // console.log('da el list of products ' , listOfRelatedProducts);
+    
   return (
     <div className="">
       <Swiper
@@ -73,8 +75,8 @@ export default function RelatedProductSwiper({listOfRelatedProducts}:{listOfRela
           },
         }}
        
-        onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log("slide change")}
+        // onSwiper={(swiper) => console.log(swiper)}
+        // onSlideChange={() => console.log("slide change")}
         loop={true}
       >
         {listOfRelatedProducts.map((product, idx) => (
