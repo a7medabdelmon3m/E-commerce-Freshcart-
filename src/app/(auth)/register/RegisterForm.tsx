@@ -80,7 +80,7 @@ export default function RegisterForm() {
   const passwordStyle = getPasswordStyling(passwordStrength) ;
 
   return (
-    <div className="container min-w-100 mx-auto  py-10 px-6 rounded-2xl flex flex-col gap-2 bg-white shadow-[0px_4px_6px_-4px_#0000001A,0px_10px_15px_-3px_#0000001A] text-[#364153]">
+    <div className="container  mx-auto  py-10 px-6 rounded-2xl flex flex-col gap-2 bg-white shadow-[0px_4px_6px_-4px_#0000001A,0px_10px_15px_-3px_#0000001A] text-[#364153]">
       <h2 className="text-[30px] leading-9 font-semibold text-center align-middle">
         Create Your Account
       </h2>
