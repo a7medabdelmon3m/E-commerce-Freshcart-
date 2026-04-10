@@ -46,6 +46,12 @@ import {
 import { UploadCloud } from "lucide-react";
 import { getNumOfICartitems } from "@/app/(auth)/login/login.action";
 import { FaRightFromBracket } from "react-icons/fa6";
+const categoryList = [
+  { name: "Electronics", id: "6439d58a0049ad0b52b9003f" },
+  { name: "Women's Fashion", id: "6439d5b90049ad0b52b90048" },
+  { name: "Men's Fashion", id: "6439d2d167d9aa4ca970649f" },
+  { name: "Beauty & Health", id: "6439d40367d9aa4ca97064a8" },
+];
 
 export default function NavigationMenuDemo() {
   const router = useRouter();
@@ -226,64 +232,28 @@ export default function NavigationMenuDemo() {
                         </Link>
                       </NavigationMenuLink>
                     </li>
+                    {categoryList.map((item) => (
+                      <li key={item.id} className="hover:bg-main-color-subtle">
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={`/products?category=${item.id}`}
+                            className="block select-none rounded-md py-2 px-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium">
+                              {item.name}
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
 
-                    <li className="hover:bg-main-color-subtle">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href="/docs/installation"
-                          className="block select-none rounded-md py-2 px-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium">Electronics</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-
-                    <li className="hover:bg-main-color-subtle">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href="/docs/primitives/typography"
-                          className="block select-none rounded-md py-2 px-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium">
-                            {" "}
-                            &apos;s fashion
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-
-                    <li className="hover:bg-main-color-subtle">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href="/docs/primitives/typography"
-                          className="block select-none rounded-md py-2 px-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium">
-                            Men &apos;s fashion
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-
-                    <li className="hover:bg-main-color-subtle">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href="/docs/primitives/typography"
-                          className="block select-none rounded-md py-2 px-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium">
-                            Beauty & Health
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className="hover:text-main-color">
-                  <Link href="/">Brands</Link>
+                  <Link href="/brands">Brands</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </div>
@@ -401,7 +371,7 @@ export default function NavigationMenuDemo() {
                   <Link href="/">Categories</Link>
                 </li>
                 <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
-                  <Link href="/">Brands</Link>
+                  <Link href="/brands">Brands</Link>
                 </li>
               </ul>
             </div>
@@ -432,11 +402,11 @@ export default function NavigationMenuDemo() {
                         <FaShoppingCart color="#16A34A" />
                       </div>
                       <span className="font-medium leading-6">Cart</span>
-                      {numberOfCartItems >= 1 &&
+                      {numberOfCartItems >= 1 && (
                         <div className=" ml-auto w-6 h-6 rounded-full py-1 px-2.5 flex items-center justify-center bg-main-color text-white font-bold text-[12px] leading-4">
-                        {numberOfCartItems}
-                      </div>
-                      }
+                          {numberOfCartItems}
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </li>

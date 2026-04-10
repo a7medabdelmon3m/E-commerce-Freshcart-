@@ -61,7 +61,7 @@ export default async function Home() {
               <SectionHeader coloredText="Shop By  " unColoredText="Category" />
             </div>
             <Link
-              href={"/"}
+              href={"/categories"}
               className=" self-end sm:self-auto text-[16px] font-medium leading-24 text-main-color"
             >
               View All Categories <FaArrowRightLong className="ml-2 inline" />

@@ -12,7 +12,7 @@ export default async function CategoryList() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       {allCategories?.map((cat) => (
-        <Link key={cat._id} href={"/"}>
+        <Link key={cat._id} href={`/categories/${cat._id}`}>
           <HomeCategoryCard categoryData={cat} />
         </Link>
       ))}

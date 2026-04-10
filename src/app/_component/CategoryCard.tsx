@@ -10,7 +10,7 @@ export default function CategoryCard({category}:prop) {
     
   return (
      <Link
-            href="/"
+            href={`/categories/${category._id}`}
             className="bg-[#FFFFFF] p-4 sm:p-6 rounded-2xl border border-[#F3F4F6] hover:-translate-y-1 hover:border-green-200 shadow-[0px_1px_2px_-1px_#0000001A,0px_1px_3px_0px_#0000001A] hover:shadow-[0px_8px_10px_-6px_#0000001A,0px_20px_25px_-5px_#0000001A] transition-all duration-300  group"
           >
             <div className="relative aspect-square rounded-xl bg-[#F9FAFB] overflow-hidden mb-4">
