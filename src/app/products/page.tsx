@@ -67,12 +67,12 @@ export default async function page({
         )}
 
         <div className="mb-6 text-sm text-text-color font-medium leading-5">
-          Showing {allproducts?.length} products
+          Showing {allproducts?.data?.length || 0} products
         </div>
         {(allproducts?.data?.length as number) > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-              {allproducts?.map((product) => (
+              {allproducts?.data?.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
