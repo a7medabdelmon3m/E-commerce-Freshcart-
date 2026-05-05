@@ -49,7 +49,7 @@ export default async function page({
         brand={myBrand ? myBrand : myCategory ? myCategory : undefined}
         icon={myBrand || myCategory ? undefined : mySubcategory ? <FaFolderOpen/> : <FaBoxOpen />}
         customName={
-          name ? name : undefined
+          name ? ['products',name] : ['products']
         }
         isBrand={myBrand ? true : false}
       />
@@ -69,7 +69,7 @@ export default async function page({
         <div className="mb-6 text-sm text-text-color font-medium leading-5">
           Showing {allproducts?.length} products
         </div>
-        {(allproducts?.length as number) > 0 ? (
+        {(allproducts?.data?.length as number) > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {allproducts?.map((product) => (

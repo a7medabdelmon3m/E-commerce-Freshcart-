@@ -10,7 +10,7 @@ export type prop = {
   desc: string;
   icon?: ReactNode;
   brand?: productBrand | productCategory ;
-  customName?:string;
+  customName?:string[];
   isBrand?:boolean
 };
 export default function PageHeader({
@@ -25,7 +25,7 @@ export default function PageHeader({
   return (
     <div className={`bg-linear-to-br ${grediantColors} `}>
       <div className="container mx-auto px-4 py-8 space-y-6 text-white">
-        <Breadcrumbs isBrand={isBrand} customName={customName as string} />
+        <Breadcrumbs  customName={customName as string[]} />
         <div className="flex gap-5">
           <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-[#FFFFFF33] backdrop-blur-sm shadow-[0px_8px_10px_-6px_#0000001A,0px_20px_25px_-5px_#0000001A] text-white text-3xl">
             {icon ? (

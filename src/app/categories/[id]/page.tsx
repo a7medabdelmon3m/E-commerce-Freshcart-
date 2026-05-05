@@ -23,7 +23,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
     <div>
       <section>
         <PageHeader
-          customName={category?.name}
+          customName={[category?.name as string]}
           isBrand={false}
           brand={category}
           title={category?.name || 'product'}

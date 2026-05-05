@@ -5,6 +5,7 @@ import {
   orderType,
   productBrand,
   productCategory,
+  ProductResponse,
   productType,
   subCategoryType,
 } from "../types";
@@ -61,9 +62,9 @@ export async function getAllBrands(): Promise<productBrand[] | undefined> {
     console.log("error : ", error);
   }
 }
-export async function getSpecificBrand(id:string): Promise<
-   productBrand | undefined
-> {
+export async function getSpecificBrand(
+  id: string,
+): Promise<productBrand | undefined> {
   // await new Promise((resolve) => setTimeout(resolve, 10000));
   try {
     const resp = await fetch(
@@ -76,9 +77,9 @@ export async function getSpecificBrand(id:string): Promise<
     console.log("error : ", error);
   }
 }
-export async function getSubCategory(id:string): Promise<
-   subCategoryType[] | undefined
-> {
+export async function getSubCategory(
+  id: string,
+): Promise<subCategoryType[] | undefined> {
   // await new Promise((resolve) => setTimeout(resolve, 10000));
   try {
     const resp = await fetch(
@@ -91,9 +92,9 @@ export async function getSubCategory(id:string): Promise<
     console.log("error : ", error);
   }
 }
-export async function getSpecificCategory(id:string): Promise<
-   productCategory | undefined
-> {
+export async function getSpecificCategory(
+  id: string,
+): Promise<productCategory | undefined> {
   // await new Promise((resolve) => setTimeout(resolve, 10000));
   try {
     const resp = await fetch(
@@ -106,9 +107,9 @@ export async function getSpecificCategory(id:string): Promise<
     console.log("error : ", error);
   }
 }
-export async function getSpecificSubcategory(id:string): Promise<
-   subCategoryType | undefined
-> {
+export async function getSpecificSubcategory(
+  id: string,
+): Promise<subCategoryType | undefined> {
   // await new Promise((resolve) => setTimeout(resolve, 10000));
   try {
     const resp = await fetch(
@@ -122,27 +123,48 @@ export async function getSpecificSubcategory(id:string): Promise<
   }
 }
 export async function getFillteredProducts(filters: {
-  brand?: string;
-  price?: string;
+  brand?: string | string[];
+  category?: string | string[];
+  minPrice?: string;
+  maxPrice?: string;
   keyword?: string;
-  category?: string;
   subcategory?: string;
-}): Promise<productType[] | undefined> {
+  page?: number;
+  sort?: string;
+}): Promise<ProductResponse | undefined> {
   // await new Promise((resolve) => setTimeout(resolve, 10000));
   const queryParams = new URLSearchParams();
 
-  if (filters.brand) queryParams.append("brand", filters.brand);
-  if (filters.price) queryParams.append("price[gte]", filters.price); 
+  if (filters.brand) {
+    const brands = Array.isArray(filters.brand)
+      ? filters.brand
+      : [filters.brand];
+    brands.forEach((b) => queryParams.append("brand", b));
+  }
+
+  if (filters.category) {
+    const cats = Array.isArray(filters.category)
+      ? filters.category
+      : [filters.category];
+    cats.forEach((c) => queryParams.append("category", c));
+  }
+
+  if (filters.minPrice) queryParams.append("price[gte]", filters.minPrice);
+  if (filters.maxPrice) queryParams.append("price[lte]", filters.maxPrice);
+
   if (filters.keyword) queryParams.append("keyword", filters.keyword);
-  if (filters.category) queryParams.append("category", filters.category);
-  if (filters.subcategory) queryParams.append("subcategory", filters.subcategory);
+  if (filters.sort) queryParams.append("sort", filters.sort);
+  if (filters.subcategory)
+    queryParams.append("subcategory", filters.subcategory);
+  if (filters.page) queryParams.append("page", filters.page.toString());
   try {
     const resp = await fetch(
-      `https://ecommerce.routemisr.com/api/v1/products?${queryParams}`,
+      `https://ecommerce.routemisr.com/api/v1/products?${decodeURIComponent(queryParams.toString())}`,
+      { cache: 'no-store' }
     );
     const finalData = await resp.json();
     // console.log('filtered data : ' , finalData.data);
-    return finalData.data;
+    return finalData;
   } catch (error) {
     console.log("error : ", error);
   }

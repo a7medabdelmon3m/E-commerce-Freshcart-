@@ -10,6 +10,7 @@ export interface cartContextType{
 }
  export const cartContext = createContext<cartContextType>({numberOfCartItems :0 ,updateNumOfCartItems(){} })
 export default function CartContextProvider({children , cartItems}:{children:ReactNode,cartItems:cartItemType| undefined | Error}) {
+  
   const [numberOfCartItems, setnumberOfCartItems] = useState( ()=> {
     return cartItems === undefined ? 0:(cartItems as cartItemType).products.length})
     function updateNumOfCartItems(num:number){

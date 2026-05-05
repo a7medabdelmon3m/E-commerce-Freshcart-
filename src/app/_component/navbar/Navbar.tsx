@@ -53,8 +53,22 @@ const categoryList = [
   { name: "Beauty & Health", id: "6439d40367d9aa4ca97064a8" },
 ];
 
+
 export default function NavigationMenuDemo() {
+  const searchRef =  React.useRef<HTMLInputElement>(null)
   const router = useRouter();
+  function handleSearch(){
+    // e.preventDefault(); 
+    const searchItem = searchRef.current?.value ; 
+    if(searchItem && searchItem.trim()){
+      router.push(`/search?q=${searchItem}`)
+    }
+    // console.log('da el search value : ' , searchItem);
+  else
+    console.log('أنت عبيط يلا ؟! , أكتب أي حاجة ');
+    
+    
+  }
 
   const { toggleSidebar } = useSidebar();
   const session = useSession();
@@ -192,10 +206,11 @@ export default function NavigationMenuDemo() {
 
             <div className="relative hidden lg:flex  flex-1 max-w-md">
               <Input
+                 ref={searchRef}
                 className="w-full h-auto bg-[#F9FAFB80] border border-[#E5E7EB] rounded-[33554400px] font-medium pt-3 pr-12 pb-3.25 pl-5 focus:ring-1 focus:ring-[#22c55e] focus:ring-offset-1"
                 placeholder="Search for products, brands and more..."
               />
-              <button className="absolute top-1/2 right-1.5 -translate-y-1/2 bg-main-color rounded-full w-9 h-9 flex items-center justify-center hover:bg-main-color-hover">
+              <button onClick={handleSearch} className="absolute top-1/2 right-1.5 -translate-y-1/2 bg-main-color rounded-full w-9 h-9 flex items-center justify-center hover:bg-main-color-hover">
                 <IoSearch className="text-[14px] leading-4.25 text-white" />
               </button>
             </div>

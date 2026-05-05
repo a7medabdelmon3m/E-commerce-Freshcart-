@@ -74,4 +74,16 @@ export interface orderType {
   createdAt:string;
   id:string
 }
+export interface MetaData {
+  currentPage: number;
+  numberOfPages: number;
+  limit: number;
+  nextPage?: number;
+}
+
+export interface ProductResponse {
+  results: number;
+  metadata: MetaData;
+  data: productType[]; 
+}
 
