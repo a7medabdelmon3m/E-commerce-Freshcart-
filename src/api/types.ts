@@ -70,9 +70,9 @@ export interface orderType {
   paymentMethodType: string;
   isPaid: boolean;
   isDelivered: boolean;
-  cartItems:productItemType[];
-  createdAt:string;
-  id:string
+  cartItems: productItemType[];
+  createdAt: string;
+  id: string;
 }
 export interface MetaData {
   currentPage: number;
@@ -84,6 +84,25 @@ export interface MetaData {
 export interface ProductResponse {
   results: number;
   metadata: MetaData;
-  data: productType[]; 
+  data: productType[];
 }
-
+export interface wishListType {
+  sold: string;
+  images: string[];
+  subcategory: subCategoryType[];
+  ratingsQuantity: number;
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  quantity: number;
+  price: number;
+  imageCover: string;
+  category: productCategory;
+  brand: productBrand;
+  ratingsAverage: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  id: string;
+}

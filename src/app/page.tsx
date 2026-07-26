@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import ProductCard from "./_component/productCard/ProductCard";
-import { productType, slideType } from "@/api/types";
-import { getAllProducts } from "@/api/services/route.services";
+import { productType, slideType, wishListType } from "@/api/types";
+import { getAllProducts, getUserWishlist } from "@/api/services/route.services";
 import SectionHeader from "./_component/sectionHeader/SectionHeader";
 import WebFeatures from "./_component/webFeatures/WebFeatures";
 import Link from "next/link";
@@ -50,6 +50,8 @@ const CategoryListAsLazy = lazy(
 );
 export default async function Home() {
   const allProducts: productType[] | undefined = await getAllProducts();
+  const wishlist = await getUserWishlist()
+    console.log('wishlist : ' , wishlist);
   return (
     <>
       <Slider listOfSlides={listOfSlides} slidesPerView={1} spaceBetweenVal={0} />
@@ -147,7 +149,7 @@ export default async function Home() {
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-6">
           {allProducts?.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} wishlist={wishlist as wishListType[]} />
           ))}
         </div>
         <section className="py-16">

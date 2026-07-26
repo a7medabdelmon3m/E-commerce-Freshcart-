@@ -21,7 +21,7 @@ const segments = customName ;
     <nav className="flex items-center gap-2 text-sm leading-5 font-medium">
       <Link
         href={"/"}
-        className={`${linkColor}${linkColorHover} transition-colors duration-100`}
+        className={`${linkColor} ${linkColorHover} transition-colors duration-100`}
       >
         Home
       </Link>

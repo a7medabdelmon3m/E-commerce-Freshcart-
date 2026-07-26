@@ -46,4 +46,16 @@
   --color-sidebar-ring:var(--sidebar-ring);
 }
 
+@keyframes float{
+  0%{
+    transform: translateY(0) rotate(0);
+  }
+  50%{
+    transform:translateY(-20px) rotate(10deg)
+  }
+  100%{
+    transform: translateY(0) rotate(0);
+  }
+}
+
 

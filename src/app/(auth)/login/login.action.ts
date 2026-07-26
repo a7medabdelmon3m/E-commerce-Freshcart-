@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import {loginType } from "./login.type";
 import { get } from "http";
-import { getCartItems } from "@/api/services/route.services";
+import { getCartItems, getUserWishlist } from "@/api/services/route.services";
 
 export async function loginAction(data:loginType){
   
@@ -40,5 +40,10 @@ export async function loginAction(data:loginType){
 }
 export async  function getNumOfICartitems(){
    return getCartItems()
+   
+}
+
+export async  function getNumOfIWishlist(){
+   return getUserWishlist()
    
 }

@@ -3,6 +3,7 @@ import {
   getSpecificBrand,
   getSpecificCategory,
   getSpecificSubcategory,
+  getUserWishlist,
 } from "@/api/services/route.services";
 import React from "react";
 import { FaBoxOpen, FaFolderOpen } from "react-icons/fa";
@@ -11,6 +12,7 @@ import ProductCard from "../_component/productCard/ProductCard";
 import PageHeader from "../_component/PageHeader";
 import Filter from "../_component/Filter";
 import EmptyMsg from "../_component/EmptyMsg";
+import { wishListType } from "@/api/types";
 
 export default async function page({
   searchParams,
@@ -24,6 +26,9 @@ export default async function page({
   const myBrand = brand ? await getSpecificBrand(brand) : null;
   const myCategory = category ? await getSpecificCategory(category) : null;
   const mySubcategory = subcategory ? await getSpecificSubcategory(subcategory) : null;
+  const wishlist = await getUserWishlist()
+  console.log('wishlist : ' , wishlist);
+  
 
   const name = myBrand ? myBrand.name : myCategory ? myCategory.name :  mySubcategory ? mySubcategory.name : null;
 
@@ -73,7 +78,7 @@ export default async function page({
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {allproducts?.data?.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} wishlist={wishlist as wishListType[]} />
               ))}
             </div>
           </>

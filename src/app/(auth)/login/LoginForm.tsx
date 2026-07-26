@@ -8,7 +8,11 @@ import { Controller, useForm } from "react-hook-form";
 import { loginSchema } from "./login.schema";
 import { type } from "os";
 import { loginType } from "./login.type";
-import { getNumOfICartitems, loginAction } from "./login.action";
+import {
+  getNumOfICartitems,
+  getNumOfIWishlist,
+  loginAction,
+} from "./login.action";
 import { toast } from "react-toastify";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
@@ -26,10 +30,12 @@ import {
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { cartContextType, useCartContext } from "@/app/_context/CartContext";
+import { getUserWishlist } from "@/api/services/route.services";
 // import * as z from 'zod'
 
 export default function LoginForm() {
-   const{updateNumOfCartItems} =  (useCartContext() as cartContextType)
+  const { updateNumOfCartItems, updateNumOfWishlistItems } =
+    useCartContext() as cartContextType;
   const [passwordIsShown, setPasswordIsShown] = useState(false);
   const router = useRouter();
   const {
@@ -44,18 +50,17 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
   async function mySubmit(data: loginType) {
-
-    const resp = await signIn('credentials' , {redirect:false , /*callbackUrl:'/'*/ ...data})
-    if(resp?.ok){
-
-      const resp = await getNumOfICartitems()
-      updateNumOfCartItems(resp?.products.length as number)
-         toast.success("Login Successful");
+    const resp = await signIn("credentials", {
+      redirect: false,
+      /*callbackUrl:'/'*/ ...data,
+    });
+    if (resp?.ok) {
+      toast.success("Login Successful");
       setTimeout(() => {
         router.push("/");
       }, 1000);
-    }else{
-         toast.error("Email Or Password Is Incorrect");
+    } else {
+      toast.error("Email Or Password Is Incorrect");
     }
     // console.log("data", data);
     // const isSuccess = await loginAction(data);
@@ -197,11 +202,16 @@ export default function LoginForm() {
                 <div className="absolute top-4.5 left-4 text-[#99A1AF]">
                   <FaLock />
                 </div>
-                <div onClick={() =>{setPasswordIsShown(!passwordIsShown)}} className="absolute top-4.5 right-4 text-[#99A1AF]">
+                <div
+                  onClick={() => {
+                    setPasswordIsShown(!passwordIsShown);
+                  }}
+                  className="absolute top-4.5 right-4 text-[#99A1AF]"
+                >
                   {!passwordIsShown ? (
-                    <FaEyeSlash  className="hover:text-[#4A5565]" />
+                    <FaEyeSlash className="hover:text-[#4A5565]" />
                   ) : (
-                    <FaEye  className="hover:text-[#4A5565]" />
+                    <FaEye className="hover:text-[#4A5565]" />
                   )}
                 </div>
               </div>

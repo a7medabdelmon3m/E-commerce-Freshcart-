@@ -5,26 +5,50 @@ import React from "react";
 import { CiHeart } from "react-icons/ci";
 import { BsArrowRepeat } from "react-icons/bs";
 import {
+  FaHeart,
   FaPlus,
   FaRegEye,
+  FaRegHeart,
   FaRegStar,
   FaStar,
   FaStarHalfAlt,
 } from "react-icons/fa";
-import { productType } from "@/api/types";
+import { productType, wishListType } from "@/api/types";
 import Link from "next/link";
 import AddToCartButton from "./AddToCartButton";
+import { addItemToWishList } from "@/app/cart/cart.actions";
+import { cartContextType, useCartContext } from "@/app/_context/CartContext";
+import { toast } from "react-toastify";
 
 type Props = {
   product: productType;
+  wishlist?:wishListType[]
 };
 
-export default function ProductCard({ product }: Props) {
+export default function ProductCard({ product ,wishlist }: Props) {
+     const {updateNumOfCartItems , updateNumOfWishlistItems} =useCartContext() as cartContextType
+
+     const isAddToWishlist = wishlist?.some(item => item.id === product.id)
+  
   const discountPercent: number = product.priceAfterDiscount
     ? Math.round(
         ((product.price - product.priceAfterDiscount) / product.price) * 100,
       )
     : 0;
+    const handleAddToWishlist = async () => {
+          console.log('product.id : ' , product.id);
+          
+          const response = await addItemToWishList(product.id)
+          console.log('response : ' , response.data.data.length );
+          
+          if(response.success){
+            toast.success('product add to wishlist successfully.')
+            updateNumOfWishlistItems(response.data.data.length)
+          }else{
+            toast.error(response.error)
+          }
+
+    }
 
   return (
     <div className="group bg-[#FFFFFF] rounded-lg overflow-hidden border border-[#E5E7EB] col-span-1 transition-all duration-500 hover:-translate-y-1.5 shadow-black/20 hover:shadow-lg ">
@@ -38,8 +62,9 @@ export default function ProductCard({ product }: Props) {
         />
 
         <div className="absolute top-3 right-3 z-10">
-          <div className="w-8 h-8 mb-2 rounded-full bg-[#FFFFFF] shadow-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:text-[#E7000B]">
-            <CiHeart size={20} />
+          <div onClick={handleAddToWishlist} className={`w-8 h-8 mb-2 rounded-full bg-[#FFFFFF] shadow-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:text-[#E7000B]`}>
+            {isAddToWishlist ? <FaHeart size={16} className="text-red-500" /> : <FaRegHeart  size={16}/> }
+            
           </div>
           <div className="w-8 h-8 mb-2 rounded-full bg-[#FFFFFF] shadow-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:text-main-color">
             <BsArrowRepeat size={18} />

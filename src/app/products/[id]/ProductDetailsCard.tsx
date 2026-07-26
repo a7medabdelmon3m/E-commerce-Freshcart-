@@ -2,6 +2,8 @@
 import { productType } from "@/api/types";
 import AddToCartButton from "@/app/_component/productCard/AddToCartButton";
 import QuantitySelector from "@/app/_component/quantitySelector/QuantitySelector";
+import { cartContextType, useCartContext } from "@/app/_context/CartContext";
+import { addItemToWishList } from "@/app/cart/cart.actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -16,9 +18,11 @@ import {
 import {
   FaArrowRotateLeft,
   FaShieldHalved,
+  FaSpinner,
   FaTruckFast,
 } from "react-icons/fa6";
 import { MdElectricBolt } from "react-icons/md";
+import { toast } from "react-toastify";
 
 export default function ProductDetailsCard({
   productDetails,
@@ -26,7 +30,21 @@ export default function ProductDetailsCard({
   productDetails: productType;
 }) {
   const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const realPrice = productDetails?.priceAfterDiscount || productDetails?.price;
+  const { updateNumOfWishlistItems } = useCartContext() as cartContextType;
+
+  const handleAddToWishlist = async () => {
+    setIsLoading(true);
+    const response = await addItemToWishList(productDetails.id);
+    setIsLoading(false);
+    if (response.success) {
+      toast.success("product add to wishlist successfully.");
+      updateNumOfWishlistItems(response.data.data.length);
+    } else {
+      toast.error(response.error);
+    }
+  };
 
   return (
     <div>
@@ -48,17 +66,17 @@ export default function ProductDetailsCard({
         <div className="flex gap-3 items-center mb-4">
           <div className="flex text-yellow-400 pt-0.75 pb-1.25">
             {Array.from({ length: 5 }).map((_, i) =>
-                          Math.floor(productDetails?.ratingsAverage) >= i + 1 ? (
-                            <span key={i}>
-                              <FaStar />
-                            </span>
-                          ) : productDetails?.ratingsAverage % 1 >= 0.5 &&
-                            Math.floor(productDetails?.ratingsAverage) === i ? (
-                            <FaStarHalfAlt />
-                          ) : (
-                            <FaRegStar />
-                          ),
-                        )}
+              Math.floor(productDetails?.ratingsAverage) >= i + 1 ? (
+                <span key={i}>
+                  <FaStar />
+                </span>
+              ) : productDetails?.ratingsAverage % 1 >= 0.5 &&
+                Math.floor(productDetails?.ratingsAverage) === i ? (
+                <FaStarHalfAlt />
+              ) : (
+                <FaRegStar />
+              ),
+            )}
           </div>
           <span className="text-sm font-medium text-[#4A5565]">
             {productDetails?.ratingsAverage} ({productDetails?.ratingsQuantity}{" "}
@@ -107,7 +125,11 @@ export default function ProductDetailsCard({
           {/* <Button className=" rounded-xl h-auto flex gap-2 py-3.5 px-6 items-center flex-1 text-white font-medium bg-main-color shadow-[0px_4px_6px_-3px_#16A34A40,0px_10px_15px_-3px_#16A34A40] hover:bg-main-color-hover">
            
           </Button> */}
-          <AddToCartButton id={productDetails.id} successState="Add to Cart" className="rounded-xl h-auto flex gap-2 py-3.5 px-6 items-center flex-1 text-white font-medium bg-main-color shadow-[0px_4px_6px_-3px_#16A34A40,0px_10px_15px_-3px_#16A34A40] hover:bg-main-color-hover">
+          <AddToCartButton
+            id={productDetails.id}
+            successState="Add to Cart"
+            className="rounded-xl h-auto flex gap-2 py-3.5 px-6 items-center flex-1 text-white font-medium bg-main-color shadow-[0px_4px_6px_-3px_#16A34A40,0px_10px_15px_-3px_#16A34A40] hover:bg-main-color-hover"
+          >
             <FaShoppingCart />
             Add to Cart
           </AddToCartButton>
@@ -117,9 +139,22 @@ export default function ProductDetailsCard({
           </Button>
         </div>
         <div className="flex gap-3 mb-6">
-          <Button className=" rounded-xl h-auto flex gap-2 py-3 px-4 items-center justify-center flex-1 text-[#364153] font-medium border-2 border-[#E5E7EB] hover:text-main-color-hover hover:border-[#9DF2BB]">
-            <FaRegHeart />
-            Add to Wishlist
+          <Button
+            onClick={handleAddToWishlist}
+            disabled={isLoading}
+            className=" rounded-xl h-auto flex gap-2 py-3 px-4 items-center justify-center flex-1 text-[#364153] font-medium border-2 border-[#E5E7EB] hover:text-main-color-hover hover:border-[#9DF2BB]"
+          >
+            {isLoading ? (
+              <>
+                <FaSpinner className="animate-spin" />
+                Adding to Wishlist...
+              </>
+            ) : (
+              <>
+                <FaRegHeart />
+                Add to Wishlist
+              </>
+            )}
           </Button>
 
           <Button className="rounded-xl h-auto flex gap-2 p-4! items-center justify-center text-[#364153] font-medium border-2 border-[#E5E7EB] hover:text-main-color-hover hover:border-[#9DF2BB]">

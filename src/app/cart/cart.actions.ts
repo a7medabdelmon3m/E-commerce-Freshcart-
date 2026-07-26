@@ -110,3 +110,70 @@ export async function clearUserCart() {
     return new Error("sesion is ended!");
   }
 }
+export async function deleteWishListItem(productId: string) {
+  const tokenValue = (await decodeAuthanticationUserToken())?.token;
+
+  if (!tokenValue) {
+    return { success: false, error: "Session is ended!" };
+  }
+
+  try {
+    const resp = await fetch(
+      `https://ecommerce.routemisr.com/api/v1/wishlist/${productId}`,
+      {
+        method: "DELETE", // يفضل تتكتب Capital
+        headers: {
+          token: tokenValue,
+        },
+      }
+    );
+
+    if (resp.ok) {
+      const finalData = await resp.json();
+      
+      // بنعمل revalidate هنا قبل ما نرجع الداتا
+      revalidatePath("/wishlist"); 
+      
+      return { success: true, data: finalData };
+    }
+    
+    return { success: false, error: "Failed to delete item" };
+
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Something went wrong" };
+  }
+}
+export async function addItemToWishList(productId: string) {
+  const tokenValue = (await decodeAuthanticationUserToken())?.token;
+
+  if (!tokenValue) {
+    return { success: false, error: "Session is ended!" };
+  }
+
+  try {
+    const resp = await fetch(
+      `https://ecommerce.routemisr.com/api/v1/wishlist`,
+      {
+        method: "POST",
+        body: JSON.stringify({ productId: productId }), 
+        headers: {
+          token: tokenValue,"Content-Type": "application/json"
+        },
+        
+      }
+    );
+
+    if (resp.ok) {
+      const finalData = await resp.json();
+            
+      return { success: true, data: finalData };
+    }
+    
+    return { success: false, error: "Failed to add product to wishlist" };
+
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Something went wrong" };
+  }
+}

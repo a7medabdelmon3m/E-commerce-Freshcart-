@@ -11,6 +11,7 @@ import { BiSupport } from "react-icons/bi";
 import SessionProviderWrapper from "./_component/sessionProviderWrapper/SessionProviderWrapper";
 import CartContextProvider from "./_context/CartContext";
 import { getCartItems } from "@/api/services/route.services";
+import { getNumOfIWishlist } from "./(auth)/login/login.action";
 
 const exo = Exo({
   variable: "--font-exo",
@@ -32,13 +33,16 @@ export default async function RootLayout({
 {
 
   const cartItems = await getCartItems()
+   const whishlistItems = await getNumOfIWishlist()
+  //  console.log('whishlistItems : ' , whishlistItems);
+   
   return (
     <html lang="en">
       <body
         className={`${exo.variable} font-exo  antialiased`}
         suppressHydrationWarning={true}
       >
-        <CartContextProvider cartItems={cartItems}>
+        <CartContextProvider cartItems={cartItems} whishlistItems={whishlistItems}>
           <SessionProviderWrapper>
             <SidebarProvider defaultOpen={false}>
               <div className="flex flex-col w-full ">

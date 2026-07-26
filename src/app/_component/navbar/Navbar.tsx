@@ -9,7 +9,6 @@ import {
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import Image from "next/image";
@@ -17,7 +16,10 @@ import { Input } from "@/components/ui/input";
 import { BiSupport } from "react-icons/bi";
 import { CiHeart, CiMail } from "react-icons/ci";
 import {
+  FaAddressBook,
   FaBars,
+  FaBoxOpen,
+  FaHeart,
   FaPhoneAlt,
   FaShoppingCart,
   FaTruck,
@@ -39,43 +41,69 @@ import { MdLogout } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
-  cartContext,
   cartContextType,
   useCartContext,
 } from "@/app/_context/CartContext";
-import { UploadCloud } from "lucide-react";
 import { getNumOfICartitems } from "@/app/(auth)/login/login.action";
-import { FaRightFromBracket } from "react-icons/fa6";
+import { FaCircleUser, FaGear, FaRightFromBracket } from "react-icons/fa6";
 const categoryList = [
   { name: "Electronics", id: "6439d58a0049ad0b52b9003f" },
   { name: "Women's Fashion", id: "6439d5b90049ad0b52b90048" },
   { name: "Men's Fashion", id: "6439d2d167d9aa4ca970649f" },
   { name: "Beauty & Health", id: "6439d40367d9aa4ca97064a8" },
 ];
-
+const userListItems = [
+  {
+    name: "My Profile",
+    link: "/account",
+    icon: <FaUser className="text-gray-400 w-4" />,
+  },
+  {
+    name: "My Orders",
+    link: "/orders",
+    icon: <FaBoxOpen className="text-gray-400 w-4" />,
+  },
+  {
+    name: "My Wishlist",
+    link: "/wishlist",
+    icon: <FaHeart className="text-gray-400 w-4" />,
+  },
+  {
+    name: "Addresses",
+    link: "/account/addresses",
+    icon: <FaAddressBook className="text-gray-400 w-4" />,
+  },
+  {
+    name: "Settings",
+    link: "/account/settings",
+    icon: <FaGear className="text-gray-400 w-4" />,
+  },
+];
 
 export default function NavigationMenuDemo() {
-  const searchRef =  React.useRef<HTMLInputElement>(null)
+  const [isUserListOpen, setisUserListOpen] = React.useState(false);
+  const searchRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
-  function handleSearch(){
-    // e.preventDefault(); 
-    const searchItem = searchRef.current?.value ; 
-    if(searchItem && searchItem.trim()){
-      router.push(`/search?q=${searchItem}`)
+  function handleSearch() {
+    // e.preventDefault();
+    const searchItem = searchRef.current?.value;
+    if (searchItem && searchItem.trim()) {
+      router.push(`/search?q=${searchItem}`);
     }
     // console.log('da el search value : ' , searchItem);
-  else
-    console.log('أنت عبيط يلا ؟! , أكتب أي حاجة ');
-    
-    
+    else console.log("أنت عبيط يلا ؟! , أكتب أي حاجة ");
   }
 
   const { toggleSidebar } = useSidebar();
   const session = useSession();
   const userName = session.data?.user?.name;
   const isAuthanticated = session.status === "authenticated";
-  const { numberOfCartItems, updateNumOfCartItems } =
-    useCartContext() as cartContextType;
+  const {
+    numberOfCartItems,
+    updateNumOfCartItems,
+    numberOfWishlistItems,
+    updateNumOfWishlistItems,
+  } = useCartContext() as cartContextType;
   // console.log(numberOfCartItems);
 
   return (
@@ -146,6 +174,7 @@ export default function NavigationMenuDemo() {
                       await signOut({ redirect: false });
                       const resp = await getNumOfICartitems();
                       updateNumOfCartItems(resp?.products.length as number);
+                      setisUserListOpen(false);
                       router.push("/");
                     }}
                     className="flex cursor-pointer gap-1.5 items-center text-text-color hover:text-main-color"
@@ -190,10 +219,11 @@ export default function NavigationMenuDemo() {
       </div>
       <div className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_2px_-1px_rgba(0,0,0,0.1),0_1px_3px_0_rgba(0,0,0,0.1)]">
         <NavigationMenu className=" max-w-384 mx-auto px-4  ">
-          <div className=" container flex w-full items-center justify-between gap-6 list-none h-16 lg:h-18">
+          <div className=" container flex w-full items-center justify-between gap-4 lg:gap-8 list-none h-16 lg:h-18">
+            {/* this is Logo */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link href="/">
+                <Link className="p-0!" href="/">
                   <Image
                     src={logo}
                     className=" min-w-31 min-h-6 w-31 h-6 lg:w-41.5 lg:h-8  shrink-0"
@@ -206,11 +236,14 @@ export default function NavigationMenuDemo() {
 
             <div className="relative hidden lg:flex  flex-1 max-w-md">
               <Input
-                 ref={searchRef}
+                ref={searchRef}
                 className="w-full h-auto bg-[#F9FAFB80] border border-[#E5E7EB] rounded-[33554400px] font-medium pt-3 pr-12 pb-3.25 pl-5 focus:ring-1 focus:ring-[#22c55e] focus:ring-offset-1"
                 placeholder="Search for products, brands and more..."
               />
-              <button onClick={handleSearch} className="absolute top-1/2 right-1.5 -translate-y-1/2 bg-main-color rounded-full w-9 h-9 flex items-center justify-center hover:bg-main-color-hover">
+              <button
+                onClick={handleSearch}
+                className="absolute top-1/2 right-1.5 -translate-y-1/2 bg-main-color rounded-full w-9 h-9 flex items-center justify-center hover:bg-main-color-hover"
+              >
                 <IoSearch className="text-[14px] leading-4.25 text-white" />
               </button>
             </div>
@@ -261,7 +294,6 @@ export default function NavigationMenuDemo() {
                         </NavigationMenuLink>
                       </li>
                     ))}
-
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -273,7 +305,7 @@ export default function NavigationMenuDemo() {
               </NavigationMenuItem>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 lg:gap-2">
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className="hidden lg:flex">
                   <Link className="pr-2 mr-2" href="/">
@@ -292,9 +324,14 @@ export default function NavigationMenuDemo() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href="/">
-                    <div className="flex items-center justify-center w-11.25 h-11.25 rounded-full text-text-color hover:bg-[#F3F4F6] hover:text-main-color">
-                      <CiHeart className="text-[25px] leading-5" />
+                  <Link className="h-auto p-0!" href="/wishlist">
+                    <div className=" relative flex items-center justify-center w-11.25 h-11.25 rounded-full text-text-color hover:bg-[#F3F4F6] hover:text-main-color">
+                      <CiHeart className=" text-[25px] leading-5" />
+                      {numberOfWishlistItems > 0 && (
+                        <div className="absolute w-5 h-5 bg-[#FB2C36] flex items-center justify-center rounded-full top-0 right-0 text-[10px] leading-3.75 font-bold text-white border-2 border-white ">
+                          {numberOfWishlistItems}
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </NavigationMenuLink>
@@ -302,7 +339,7 @@ export default function NavigationMenuDemo() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href="/cart">
+                  <Link className="h-auto p-0!" href="/cart">
                     <div className="relative flex items-center justify-center w-11.25 h-11.25 rounded-full text-text-color hover:bg-[#F3F4F6] hover:text-main-color">
                       <FaShoppingCart className="text-[25px] leading-5" />
                       {numberOfCartItems > 0 && (
@@ -314,11 +351,67 @@ export default function NavigationMenuDemo() {
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+              {isAuthanticated && (
+                <NavigationMenuItem className=" hidden lg:block">
+                  <NavigationMenuLink className=" relative">
+                    <div
+                      onClick={() => setisUserListOpen(!isUserListOpen)}
+                      className="relative flex items-center justify-center w-11.25 h-11.25 rounded-full text-text-color hover:bg-[#F3F4F6] hover:text-main-color"
+                    >
+                      <FaCircleUser className="text-[25px] leading-5" />
+                    </div>
+                    {isUserListOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-100 rounded-2xl shadow-xl transition-all duration-200 origin-top-right opacity-100 scale-100 visible">
+                        <div className="p-4 border-b border-gray-100">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-green-100 text-main-color text-xl flex items-center justify-center">
+                              <FaCircleUser />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-gray-800 truncate">
+                                shreif
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="py-2">
+                          {userListItems.map((item) => (
+                            <UserListItem
+                              key={item.name}
+                              icon={item.icon}
+                              name={item.name}
+                              link={item.link}
+                              setisUserListOpen={setisUserListOpen}
+                            />
+                          ))}
+                        </div>
+                        <div className="border-t border-gray-100 py-2">
+                          <Button
+                            onClick={async () => {
+                              await signOut({ redirect: false });
+                              const resp = await getNumOfICartitems();
+                              updateNumOfCartItems(
+                                resp?.products.length as number,
+                              );
+                              setisUserListOpen(false);
+                              router.push("/");
+                            }}
+                            className=" h-auto! flex items-center gap-3! px-4! py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors w-full justify-start"
+                          >
+                            <FaRightFromBracket />
+                            Sign Out
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
 
               {!isAuthanticated && (
                 <NavigationMenuItem className="hidden lg:flex">
                   <NavigationMenuLink asChild>
-                    <Link href="/login">
+                    <Link className="h-auto p-0!" href="/login">
                       <div className="flex items-center justify-center gap-2 py-2.5 px-5 rounded-[33554400px] bg-main-color text-white font-semibold text-sm leading-5 hover:bg-main-color-hover">
                         <span>
                           <FiUser />
@@ -329,11 +422,11 @@ export default function NavigationMenuDemo() {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               )}
-
+              {/*this is list icon  */}
               <NavigationMenuItem className="lg:hidden">
                 <Button
                   onClick={toggleSidebar}
-                  className="pl-1 w-11 h-11 bg-main-color rounded-full flex items-center justify-center text-white hover:bg-main-color-hover"
+                  className="pl-1 w-10 h-10 bg-main-color rounded-full flex items-center justify-center text-white hover:bg-main-color-hover"
                 >
                   <FaBars className="text-[20px]" />
                 </Button>
@@ -398,15 +491,17 @@ export default function NavigationMenuDemo() {
             <div className="flex flex-col gap-1">
               <ul>
                 <li className="px-3 py-4 font-medium leading-6 rounded-xl hover:bg-[#F0FDF4] hover:text-main-color transition-colors duration-300 ">
-                  <Link href="/">
+                  <Link href="/wishlist">
                     <div className="flex gap-3 items-center">
                       <div className="bg-[#FEF2F2] w-9 h-9 rounded-full flex items-center justify-center">
                         <CiHeart color="red" />
                       </div>
                       <span className="font-medium leading-6">Wishlist</span>
-                      <div className=" ml-auto w-6 h-6 rounded-full py-1 px-2.5 flex items-center justify-center bg-[#FB2C36] text-white font-bold text-[12px] leading-4">
-                        5
-                      </div>
+                      {numberOfWishlistItems > 0 && (
+                        <div className=" ml-auto w-6 h-6 rounded-full py-1 px-2.5 flex items-center justify-center bg-[#FB2C36] text-white font-bold text-[12px] leading-4">
+                          {numberOfWishlistItems}
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </li>
@@ -449,8 +544,9 @@ export default function NavigationMenuDemo() {
                     <Button
                       onClick={async () => {
                         await signOut({ redirect: false });
-                        const resp = await getNumOfICartitems();
-                        updateNumOfCartItems(resp?.products.length as number);
+                        updateNumOfWishlistItems(0);
+                        updateNumOfCartItems(0);
+                        setisUserListOpen(false);
                         router.push("/");
                       }}
                       className="p-0"
@@ -473,7 +569,7 @@ export default function NavigationMenuDemo() {
               <div className="flex gap-3">
                 <Link
                   href={`/login/`}
-                  className="rounded-xl h-auto flex-1 bg-main-color px-4 pt-[13.5px] pb-[14.5px] text-center text-[16px] font-semibold leading-6 text-white hover:bg-[#15803D]"
+                  className="rounded-xl h-auto flex-1 bg-main-color px-4 pt-[13.5px] pb-[14.5px] text-center text-[16px] font-semibold leading-6 text-white hover:bg-main-color-hover"
                 >
                   Sign In
                 </Link>
@@ -531,5 +627,28 @@ function ListItem({
         </Link>
       </NavigationMenuLink>
     </li>
+  );
+}
+
+function UserListItem({
+  link,
+  icon,
+  name,
+  setisUserListOpen
+}: {
+  link: string;
+  icon: React.ReactNode;
+  name: string;
+  setisUserListOpen: (val:boolean) => void
+}) {
+  return (
+    <Link
+      onClick={() =>{setisUserListOpen(false)}}
+      href={link}
+      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors"
+    >
+      {icon}
+      {name}
+    </Link>
   );
 }

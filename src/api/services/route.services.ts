@@ -8,6 +8,7 @@ import {
   ProductResponse,
   productType,
   subCategoryType,
+  wishListType,
 } from "../types";
 import { log } from "console";
 
@@ -160,7 +161,7 @@ export async function getFillteredProducts(filters: {
   try {
     const resp = await fetch(
       `https://ecommerce.routemisr.com/api/v1/products?${decodeURIComponent(queryParams.toString())}`,
-      { cache: 'no-store' }
+      { cache: "no-store" },
     );
     const finalData = await resp.json();
     // console.log('filtered data : ' , finalData.data);
@@ -217,4 +218,28 @@ export async function getUserOrders(): Promise<orderType[] | undefined> {
     return undefined;
   }
 }
-// https://ecommerce.routemisr.com/api/v1/orders/user/6407cf6f515bdcf347c09f17
+export async function getUserWishlist(): Promise<wishListType[] | undefined> {
+  const tokenValue = (await decodeAuthanticationUserToken())?.token;
+  if (tokenValue) {
+    // console.log('da el token ',tokenValue);
+
+    try {
+      const resp = await fetch(
+        `https://ecommerce.routemisr.com/api/v1/wishlist`,
+        {
+          headers: { token: tokenValue },
+          next: {
+            tags: ["getUserWhishlist"],
+          },
+        },
+      );
+      const finalData = await resp.json();
+      // console.log("el cart items :", finalData.data);
+      return finalData.data;
+    } catch (error) {
+      console.log("error : ", error);
+    }
+  } else {
+    return undefined;
+  }
+}

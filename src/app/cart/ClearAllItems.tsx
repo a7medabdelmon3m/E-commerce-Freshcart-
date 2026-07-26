@@ -11,7 +11,7 @@ import { cartContextType, useCartContext } from "../_context/CartContext";
 const MySwal = withReactContent(Swal);
 
 export default function ClearAllItems() {
-    const {updateNumOfCartItems} = useCartContext() as cartContextType
+  const { updateNumOfCartItems } = useCartContext() as cartContextType;
   function handleClearCart() {
     MySwal.fire({
       title: "Clear Your Cart?",
@@ -44,7 +44,7 @@ export default function ClearAllItems() {
       if (result.isConfirmed)
         try {
           const resp = await clearUserCart();
-          updateNumOfCartItems(resp)
+          updateNumOfCartItems(resp);
           Swal.fire({
             title: "Cart Cleared!",
             text: "Your cart is now empty.",
@@ -67,7 +67,6 @@ export default function ClearAllItems() {
               icon: "!border-[#0aad0a] !text-[#0aad0a] scale-75",
               timerProgressBar: "!bg-[#0aad0a] !h-[4px]",
             },
-            
           });
         } catch (error) {
           Swal.fire("Error!", "Something went wrong.", "error");
