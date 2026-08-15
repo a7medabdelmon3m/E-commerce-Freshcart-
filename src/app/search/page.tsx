@@ -59,7 +59,7 @@ export default async function Search({
           </div>
 
           <div className="space-y-6 flex-1">
-            <div className="flex justify-between ">
+            <div className="flex justify-between flex-wrap ">
               <div className="flex items-center gap-4">
                 <FilterBtn brands={allBrands} categories={allCategories} />
                 <LayoutSwitcher />

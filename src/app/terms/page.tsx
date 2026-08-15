@@ -210,7 +210,7 @@ export default function page() {
               Back to Home
             </Link>
             <Link
-              href={`terms`}
+              href={`/privacy`}
               className="h-auto! inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-green-500 text-white hover:bg-green-600 font-medium shadow-lg shadow-green-500/25 transition-all duration-200"
             >
               View Privacy Policy 

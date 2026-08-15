@@ -6,8 +6,19 @@ import { Control, FieldValues, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { changePasswordType } from "@/api/types";
 import { dynamicApiAction } from "@/api/actions/routea.ctions";
+import { signOut } from "next-auth/react";
+import { getNumOfICartitems, getNumOfIWishlist } from "@/app/(auth)/login/login.action";
+import { cartContextType, useCartContext } from "@/app/_context/CartContext";
+import { useRouter } from "next/navigation";
 
 export default function ChangePasswordForm() {
+  const {
+      numberOfCartItems,
+      updateNumOfCartItems,
+      numberOfWishlistItems,
+      updateNumOfWishlistItems,
+    } = useCartContext() as cartContextType;
+    const router = useRouter()
   const [responseMsg, setResponseMsg] = useState<{
     type: "success" | "error";
     text: string;
@@ -41,6 +52,13 @@ export default function ChangePasswordForm() {
         type: "success",
         text: "Password updated successfully!",
       });
+
+      await signOut({ redirect: false });
+      const cartItems = await getNumOfICartitems();
+      const wishlist = await getNumOfIWishlist();
+      updateNumOfCartItems(cartItems?.products.length as number);
+      updateNumOfWishlistItems(wishlist?.length as number);
+      router.push("/login");
     } else {
       const errorMessage =
         typeof resp.error === "object"
