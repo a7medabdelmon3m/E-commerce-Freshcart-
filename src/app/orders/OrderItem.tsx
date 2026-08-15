@@ -225,7 +225,7 @@ export default function OrderItem({ orderDetails, shipingDetails }: prop) {
                 </div>
                 <div className="flex gap-3 justify-between items-center text-[#4A5565] text-sm leading-5 font-medium">
                   <span>Shipping</span>
-                  <span>Free</span>
+                  <span>{orderDetails.shippingPrice === 0 ? 'Free' : <>{orderDetails.shippingPrice} EGP</> }</span>
                 </div>
                 <hr className="border-t border-[#E5E7EB80]" />
                 <div className="flex gap-3 justify-between items-center text-[#101828] text-sm leading-5 font-semibold">

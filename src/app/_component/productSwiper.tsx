@@ -1,9 +1,6 @@
 "use client"
 import Image from "next/image";
 import React, { useState } from "react";
-import me from "../../assets/image/01207179348.png";
-import { set } from "zod";
-import { id } from "zod/locales";
 
 export default function ProductSwiper({listOfImages}:{listOfImages:string[]| undefined}) {
   // const slides = [me, me,me , me , me ,me, me,me , me , me ];

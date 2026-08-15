@@ -5,7 +5,7 @@ export const forgetPasswordSchema = z.object({
 });
 
 export const verifyCodeSchema = z.object({
-  code: z
+  resetCode: z
     .string()
     .nonempty("Code Is Required!")
     .regex(/^[0-9]{6}/, "Code Must Be 6 Digits")
@@ -13,7 +13,7 @@ export const verifyCodeSchema = z.object({
 });
 
 export const resetPasswordSchema = z.object({
-  new_password: z
+  newPassword: z
     .string()
     .regex(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
@@ -21,4 +21,4 @@ export const resetPasswordSchema = z.object({
     )
     .nonempty("New Password Is Required!"),
     confirm_password:z.string()
-}).refine((value) => value.new_password === value.confirm_password ,{error:'Passwords Are Inmatch' ,path:['confirm_password']} );
+}).refine((value) => value.newPassword === value.confirm_password ,{error:'Passwords Are Inmatch' ,path:['confirm_password']} );

@@ -37,26 +37,26 @@ const contactList = [
     icon: <FaLocationDot />,
     title: "Office",
     text: (
-      <p>
+      <span>
         123 Commerce
         <br />
         Street New York, NY 10001
         <br />
         United States
-      </p>
+      </span>
     ),
   },
   {
     icon: <FaLock />,
     title: "Business Hours",
     text: (
-      <p>
-        Monday - Friday: 8am - 6pm
+      <span>
+        Monday - Friday: 8am - 6spanm
         <br />
         Saturday: 9am - 4pm
         <br />
         Sunday: Closed
-      </p>
+      </span>
     ),
   },
 ];

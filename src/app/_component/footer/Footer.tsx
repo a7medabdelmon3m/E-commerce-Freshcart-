@@ -6,38 +6,44 @@ import { IoMdMail } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
 import FooterList from "../footerList/FooterList";
 import { HiCreditCard } from "react-icons/hi";
-
+import Link from "next/link";
+export type FooterLinkItem = {
+  text: string;
+  link: string;
+};
 export default function Footer() {
-  const categorieLinks:string[] = [
-    'All Products',
-    'Categories',
-    'Brands',
-    'Electronics',
-    "Men's Fashion",
-    "Women's Fashion",
-  ]
+ 
 
-const accountLinks:string[] = [
-  "My Account",
-  "Order History",
-  "Wishlist",
-  "Shopping Cart",
-  "Sign In",
-  "Create Account"
+const categorieLinks: FooterLinkItem[] = [
+  { text: "All Products", link: "/products" },
+  { text: "Categories", link: "/categories" },
+  { text: "Brands", link: "/brands" },
+  { text: "Electronics", link: "/products?category=6439d2d167d9aa4ca970649f" },
+  { text: "Men's Fashion", link: "/products?category=6439d5b90049ad0b52b90048" },
+  { text: "Women's Fashion", link: "/products?category=6439d58a0049ad0b52b9003f" },
 ];
 
-const supportLinks:string[] = [
-  "Contact Us",
-  "Help Center",
-  "Shipping Info",
-  "Returns & Refunds",
-  "Track Order"
+const accountLinks: FooterLinkItem[] = [
+  { text: "My Account", link: "/account" },
+  { text: "Order History", link: "/orders" },
+  { text: "Wishlist", link: "/wishlist" },
+  { text: "Shopping Cart", link: "/cart" },
+  { text: "Sign In", link: "/login" },
+  { text: "Create Account", link: "/register" },
 ];
 
-const legalLinks:string[] = [
-  "Privacy Policy",
-  "Terms of Service",
-  "Cookie Policy"
+const supportLinks: FooterLinkItem[] = [
+  { text: "Contact Us", link: "/contact" },
+  { text: "Help Center", link: "/help" },
+  { text: "Shipping Info", link: "/shopping" },
+  { text: "Returns & Refunds", link: "returns" },
+  { text: "Track Order", link: "/track-order" },
+];
+
+const legalLinks: FooterLinkItem[] = [
+  { text: "Privacy Policy", link: "/privacy" },
+  { text: "Terms of Service", link: "/terms" },
+  { text: "Cookie Policy", link: "cookies" },
 ];
   return (
     <div className="bg-[#101828]">
@@ -53,24 +59,24 @@ const legalLinks:string[] = [
               competitive prices with a seamless shopping experience.
             </p>
             <div className="flex flex-col gap-3 mb-6">
-              <a
-                href="#"
+              <Link
+                href="tel:+1 (800) 123-4567"
                 className="flex gap-3 text-[#99A1AF] text-[14px] font-medium leading-5 hover:text-main-color"
               >
                 <span className="text-[#22C55E]">
                   <FaPhoneAlt />
                 </span>
                 <span>+1 (800) 123-4567</span>
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="mailto:support@freshcart.com"
                 className="flex gap-3 text-[#99A1AF] text-[14px] font-medium leading-5 hover:text-main-color"
               >
                 <span className="text-[#22C55E]">
                   <IoMdMail />
                 </span>
                 <span>support@freshcart.com</span>
-              </a>
+              </Link>
               <p
                 
                 className="flex gap-3 text-[#99A1AF] text-[14px] font-medium leading-5"

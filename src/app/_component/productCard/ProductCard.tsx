@@ -16,39 +16,56 @@ import {
 import { productType, wishListType } from "@/api/types";
 import Link from "next/link";
 import AddToCartButton from "./AddToCartButton";
-import { addItemToWishList } from "@/app/cart/cart.actions";
+import { addItemToWishList, dynamicApiAction } from "@/api/actions/routea.ctions";
 import { cartContextType, useCartContext } from "@/app/_context/CartContext";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 type Props = {
   product: productType;
-  wishlist?:wishListType[]
+  wishlist?: wishListType[];
 };
 
-export default function ProductCard({ product ,wishlist }: Props) {
-     const {updateNumOfCartItems , updateNumOfWishlistItems} =useCartContext() as cartContextType
+export default function ProductCard({ product, wishlist }: Props) {
+  const { updateNumOfCartItems, updateNumOfWishlistItems } =
+    useCartContext() as cartContextType;
+  const router = useRouter();
 
-     const isAddToWishlist = wishlist?.some(item => item.id === product.id)
-  
+  const isAddToWishlist = wishlist?.some((item) => item.id === product.id);
+
   const discountPercent: number = product.priceAfterDiscount
     ? Math.round(
         ((product.price - product.priceAfterDiscount) / product.price) * 100,
       )
     : 0;
-    const handleAddToWishlist = async () => {
-          console.log('product.id : ' , product.id);
-          
-          const response = await addItemToWishList(product.id)
-          console.log('response : ' , response.data.data.length );
-          
-          if(response.success){
-            toast.success('product add to wishlist successfully.')
-            updateNumOfWishlistItems(response.data.data.length)
-          }else{
-            toast.error(response.error)
-          }
+  const handleAddToWishlist = async () => {
+    console.log("product.id : ", product.id);
 
+    const response = await addItemToWishList(product.id);
+    console.log("response : ", response.data.data.length);
+
+    if (response.success) {
+      updateNumOfWishlistItems(response.data.data.length);
+      router.refresh();
+    } else {
+      toast.error(response.error);
     }
+  };
+
+  async function handleRemoveFromWishlist() {
+    const resp = await dynamicApiAction(
+      `https://ecommerce.routemisr.com/api/v1/wishlist/${product.id}`,
+      undefined,
+      "DELETE",
+      undefined,
+    );
+    if (resp.success) {
+      updateNumOfWishlistItems(resp.data.data.length);
+      router.refresh();
+    } else {
+      toast.error(resp.error || "Failed to delete from wishlist");
+    }
+  }
 
   return (
     <div className="group bg-[#FFFFFF] rounded-lg overflow-hidden border border-[#E5E7EB] col-span-1 transition-all duration-500 hover:-translate-y-1.5 shadow-black/20 hover:shadow-lg ">
@@ -62,9 +79,17 @@ export default function ProductCard({ product ,wishlist }: Props) {
         />
 
         <div className="absolute top-3 right-3 z-10">
-          <div onClick={handleAddToWishlist} className={`w-8 h-8 mb-2 rounded-full bg-[#FFFFFF] shadow-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:text-[#E7000B]`}>
-            {isAddToWishlist ? <FaHeart size={16} className="text-red-500" /> : <FaRegHeart  size={16}/> }
-            
+          <div
+            onClick={
+              isAddToWishlist ? handleRemoveFromWishlist : handleAddToWishlist
+            }
+            className={`w-8 h-8 mb-2 rounded-full bg-[#FFFFFF] shadow-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:text-[#E7000B]`}
+          >
+            {isAddToWishlist ? (
+              <FaHeart size={16} className="text-red-500" />
+            ) : (
+              <FaRegHeart size={16} />
+            )}
           </div>
           <div className="w-8 h-8 mb-2 rounded-full bg-[#FFFFFF] shadow-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:text-main-color">
             <BsArrowRepeat size={18} />

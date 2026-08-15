@@ -106,3 +106,32 @@ export interface wishListType {
   __v: number;
   id: string;
 }
+export interface addresseTaye {
+  _id: string;
+  name: string;
+  details: string;
+  phone: string;
+  city: string;
+}
+export type profileInfoType = {
+  name: string;
+  email: string;
+  phone: string | number;
+};
+export type changePasswordType = {
+  currentPassword: string;
+  password: string;
+  rePassword: string;
+};
+export type productReviewType = {
+  _id: string;
+  review: string;
+  rating: number;
+  product: string;
+  user: {
+    _id: string;
+    name: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+};

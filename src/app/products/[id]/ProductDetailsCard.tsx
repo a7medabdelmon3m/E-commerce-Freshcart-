@@ -1,13 +1,15 @@
 "use client";
-import { productType } from "@/api/types";
+import { productType, wishListType } from "@/api/types";
 import AddToCartButton from "@/app/_component/productCard/AddToCartButton";
 import QuantitySelector from "@/app/_component/quantitySelector/QuantitySelector";
 import { cartContextType, useCartContext } from "@/app/_context/CartContext";
-import { addItemToWishList } from "@/app/cart/cart.actions";
+import { addItemToWishList, dynamicApiAction } from "@/api/actions/routea.ctions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
+  FaHeart,
   FaRegHeart,
   FaRegStar,
   FaShareAlt,
@@ -26,25 +28,50 @@ import { toast } from "react-toastify";
 
 export default function ProductDetailsCard({
   productDetails,
+  wishlist,
 }: {
   productDetails: productType;
+  wishlist: wishListType[];
 }) {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const realPrice = productDetails?.priceAfterDiscount || productDetails?.price;
   const { updateNumOfWishlistItems } = useCartContext() as cartContextType;
+  const router = useRouter();
+
+  // console.log('quantity : ' , quantity);
+
+  const isAddedToWishlist = wishlist.some(
+    (item) => item.id === productDetails.id,
+  );
 
   const handleAddToWishlist = async () => {
     setIsLoading(true);
     const response = await addItemToWishList(productDetails.id);
     setIsLoading(false);
     if (response.success) {
-      toast.success("product add to wishlist successfully.");
+      router.refresh()
       updateNumOfWishlistItems(response.data.data.length);
     } else {
       toast.error(response.error);
     }
   };
+  async function handleRemoveFromWishlist() {
+    setIsLoading(true);
+    const resp = await dynamicApiAction(
+      `https://ecommerce.routemisr.com/api/v1/wishlist/${productDetails.id}`,
+      undefined,
+      "DELETE",
+      undefined,
+    );
+    setIsLoading(false);
+    if (resp.success) {
+      updateNumOfWishlistItems(resp.data.data.length);
+      router.refresh();
+    } else {
+      toast.error(resp.error || "Failed to delete from wishlist");
+    }
+  }
 
   return (
     <div>
@@ -72,9 +99,9 @@ export default function ProductDetailsCard({
                 </span>
               ) : productDetails?.ratingsAverage % 1 >= 0.5 &&
                 Math.floor(productDetails?.ratingsAverage) === i ? (
-                <FaStarHalfAlt />
+                <FaStarHalfAlt key={i} />
               ) : (
-                <FaRegStar />
+                <FaRegStar key={i} />
               ),
             )}
           </div>
@@ -125,8 +152,10 @@ export default function ProductDetailsCard({
           {/* <Button className=" rounded-xl h-auto flex gap-2 py-3.5 px-6 items-center flex-1 text-white font-medium bg-main-color shadow-[0px_4px_6px_-3px_#16A34A40,0px_10px_15px_-3px_#16A34A40] hover:bg-main-color-hover">
            
           </Button> */}
+
           <AddToCartButton
             id={productDetails.id}
+            quantity={quantity}
             successState="Add to Cart"
             className="rounded-xl h-auto flex gap-2 py-3.5 px-6 items-center flex-1 text-white font-medium bg-main-color shadow-[0px_4px_6px_-3px_#16A34A40,0px_10px_15px_-3px_#16A34A40] hover:bg-main-color-hover"
           >
@@ -140,14 +169,19 @@ export default function ProductDetailsCard({
         </div>
         <div className="flex gap-3 mb-6">
           <Button
-            onClick={handleAddToWishlist}
+            onClick={ isAddedToWishlist ? handleRemoveFromWishlist :  handleAddToWishlist}
             disabled={isLoading}
-            className=" rounded-xl h-auto flex gap-2 py-3 px-4 items-center justify-center flex-1 text-[#364153] font-medium border-2 border-[#E5E7EB] hover:text-main-color-hover hover:border-[#9DF2BB]"
+            className={` rounded-xl h-auto flex gap-2 py-3 px-4 items-center justify-center flex-1  font-medium border-2  ${isAddedToWishlist ? "text-red-600 bg-red-50 border-red-200" : "border-[#E5E7EB] hover:text-main-color-hover hover:border-[#9DF2BB] text-[#364153]"}`}
           >
             {isLoading ? (
               <>
                 <FaSpinner className="animate-spin" />
                 Adding to Wishlist...
+              </>
+            ) : isAddedToWishlist ? (
+              <>
+                <FaHeart />
+                In Wishlist
               </>
             ) : (
               <>

@@ -1,6 +1,7 @@
 import {
   getAllProducts,
   getProductDetails,
+  getUserWishlist,
 } from "@/api/services/route.services";
 import Link from "next/link";
 import React from "react";
@@ -8,14 +9,8 @@ import {
   FaBox,
   FaCheck,
   FaHome,
-  FaMinus,
-  FaPlus,
-  FaRegHeart,
   FaRegStar,
-  FaShareAlt,
-  FaShoppingCart,
   FaStar,
-  FaStarHalfAlt,
   FaTruck,
 } from "react-icons/fa";
 import {
@@ -34,27 +29,41 @@ import {
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import ProductSwiper from "@/app/_component/productSwiper";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   FaArrowRotateLeft,
   FaShieldHalved,
-  FaTruckFast,
 } from "react-icons/fa6";
-import { MdElectricBolt } from "react-icons/md";
 import SectionHeader from "@/app/_component/sectionHeader/SectionHeader";
 import RelatedProductSwiper from "@/app/_component/relatedProductSwiper/RelatedProductSwiper";
-import QuantitySelector from "@/app/_component/quantitySelector/QuantitySelector";
 import ProductDetailsCard from "./ProductDetailsCard";
+import ReviewsContainer from "@/app/_component/reviewsUI/ReviewsContainer";
+import { wishListType } from "@/api/types";
 
+export const shippingFeatures: string[] = [
+  "Free shipping on orders over $50",
+  "Standard delivery: 3-5 business days",
+  "Express delivery available (1-2 business days)",
+  "Track your order in real-time",
+];
+
+export const returnFeatures: string[] = [
+  "30-day hassle-free returns",
+  "Full refund or exchange available",
+  "Free return shipping on defective items",
+  "Easy online return process",
+];
 export default async function ProductDetails({
   params,
+  searchParams
 }: {
   params: Promise<{ id: string }>;
+  searchParams :Promise<{page:string}>
 }) {
   const id = (await params).id;
   // console.log('my id : ' , id);
   const productDetails = await getProductDetails(id);
   const allProducts = await getAllProducts();
+  const wishlist = await getUserWishlist()
   
   const relatedCategories = allProducts?.filter(
     (pro) => 
@@ -91,7 +100,7 @@ export default async function ProductDetails({
               </span>
             </li>
             <li className="flex items-center text-text-color text-[14px] font-medium leading-5">
-              <Link className="flex items-center gap-1.5 " href={"/"}>
+              <Link className="flex items-center gap-1.5 " href={`/categories/${productDetails?.category._id}`}>
                 <span>{productDetails?.category.name}</span>
               </Link>
               <span className="px-2">
@@ -99,7 +108,7 @@ export default async function ProductDetails({
               </span>
             </li>
             <li className="flex items-center text-text-color text-[14px] font-medium leading-5">
-              <Link className="flex items-center gap-1.5 " href={"/"}>
+              <Link className="flex items-center gap-1.5 " href={`/products?subcategory=${productDetails?.subcategory[0]?._id}`}>
                 <span>{productDetails?.subcategory[0]?.name}</span>
               </Link>
               <span className="px-2">
@@ -123,7 +132,7 @@ export default async function ProductDetails({
               </div>
             </div>
             <div className="lg:w-3/4">
-              <ProductDetailsCard productDetails={productDetails!}/>
+              <ProductDetailsCard productDetails={productDetails!} wishlist={wishlist as wishListType[]}/>
             </div>
           </div>
         </div>
@@ -136,21 +145,21 @@ export default async function ProductDetails({
           >
             <TabsList className="flex justify-start flex-nowrap p-0! w-full border-b border-[#E5E7EB] rounded-none h-auto! overflow-x-auto overflow-y-hidden">
               <TabsTrigger
-                className="px-6! py-4! w-auto! border-0 flex-none gap-2 whitespace-nowrap shrink-0 text-[#4A5565] font-medium text-[16px] leading-5 rounded-none!  data-[state=active]:border-b-2 data-[state=active]:border-main-color data-[state=active]:bg-[#F0FDF480] data-[state=active]:text-main-color "
+                className="px-6! py-4! w-auto! border-0 flex-none gap-2 whitespace-nowrap shrink-0 text-[#4A5565] font-medium text-[16px] leading-5 rounded-none!  data-[state=active]:border-b-2 data-[state=active]:border-main-color data-[state=active]:bg-[#F0FDF480] data-[state=active]:text-main-color cursor-pointer "
                 value="overview"
               >
                 <FaStar /> Overview
               </TabsTrigger>
 
               <TabsTrigger
-                className="px-6! py-4! w-auto! border-0 flex-none gap-2 whitespace-nowrap shrink-0 text-[#4A5565] font-medium text-[16px] leading-5 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-main-color data-[state=active]:bg-[#F0FDF480] data-[state=active]:text-main-color "
-                value="Reviews (18)"
+                className="px-6! py-4! w-auto! border-0 flex-none gap-2 whitespace-nowrap shrink-0 text-[#4A5565] font-medium text-[16px] leading-5 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-main-color data-[state=active]:bg-[#F0FDF480] data-[state=active]:text-main-color cursor-pointer "
+                value={`Reviews ${productDetails?.ratingsQuantity}`}
               >
-                <FaBox /> Reviews (18)
+                <FaBox /> Reviews ({productDetails?.ratingsQuantity})
               </TabsTrigger>
 
               <TabsTrigger
-                className="px-6! py-4! w-auto! border-0 flex-none gap-2 whitespace-nowrap shrink-0 text-[#4A5565] font-medium text-[16px] leading-5 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-main-color data-[state=active]:bg-[#F0FDF480] data-[state=active]:text-main-color "
+                className="px-6! py-4! w-auto! border-0 flex-none gap-2 whitespace-nowrap shrink-0 text-[#4A5565] font-medium text-[16px] leading-5 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-main-color data-[state=active]:bg-[#F0FDF480] data-[state=active]:text-main-color cursor-pointer "
                 value="Shipping & Returns"
               >
                 <FaTruck /> Shipping & Returns
@@ -224,7 +233,7 @@ export default async function ProductDetails({
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent className="p-6" value="Reviews (18)">
+            <TabsContent className="p-6" value={`Reviews ${productDetails?.ratingsQuantity}`}>
               <Card className="rounded-none space-y-6 border-none p-0 shadow-none">
                 <CardContent className="p-0 flex gap-8 flex-col md:flex-row items-start md:items-center">
                   <div className="text-center">
@@ -256,17 +265,8 @@ export default async function ProductDetails({
                     ))}
                   </div>
                 </CardContent>
-                <div className="border-t border-gray-200 pt-6">
-                  <div className="text-center py-8">
-                    <FaStar className="text-4xl text-gray-300 mb-3 mx-auto" />
-                    <p className="text-gray-500 font-medium">
-                      Customer reviews will be displayed here.
-                    </p>
-                    <Button className="mt-4 text-main-color hover:text-main-color-hover font-medium">
-                      Write a Review
-                    </Button>
-                  </div>
-                </div>
+               
+                <ReviewsContainer searchParams={searchParams} productId={id}/>
               </Card>
             </TabsContent>
             <TabsContent className="p-6" value="Shipping & Returns">
@@ -282,14 +282,14 @@ export default async function ProductDetails({
                       </h4>
                     </div>
                     <ul className="space-y-3">
-                      {[1, 2, 3, 4].map((_, idx) => (
+                      {shippingFeatures.map((item, idx) => (
                         <li
                           key={idx}
                           className="flex items-start gap-2 text-sm text-gray-700 "
                         >
                           <FaCheck className="text-main-color mt-0.5" />
                           <span className="text-sm font-medium leading-5 text-[#364153]">
-                            Free shipping on orders over $50
+                            {item}
                           </span>
                         </li>
                       ))}
@@ -305,14 +305,14 @@ export default async function ProductDetails({
                       </h4>
                     </div>
                     <ul className="space-y-3">
-                      {[1, 2, 3, 4].map((_, idx) => (
+                      {returnFeatures.map((item, idx) => (
                         <li
                           key={idx}
                           className="flex items-start gap-2 text-sm text-gray-700 "
                         >
                           <FaCheck className="text-main-color mt-0.5" />
                           <span className="text-sm font-medium leading-5 text-[#364153]">
-                            Free shipping on orders over $50
+                            {item}
                           </span>
                         </li>
                       ))}
@@ -355,7 +355,7 @@ export default async function ProductDetails({
             </div>
             {
               relatedCategories && relatedCategories.length > 0 &&(
-                  <RelatedProductSwiper listOfRelatedProducts={relatedCategories} />
+                  <RelatedProductSwiper listOfRelatedProducts={relatedCategories} wishlist={wishlist as wishListType[]} />
               )
             }
             

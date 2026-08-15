@@ -1,12 +1,15 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import React from 'react'
 import { FaApple, FaEnvelope, FaGooglePlay, FaLeaf, FaTag, FaTruck } from 'react-icons/fa'
 import { FaArrowRightLong } from 'react-icons/fa6'
+import { motion } from "framer-motion";
+
 
 export default function AppForm() {
   return (
-    <div className='relative rounded-[40px] border-px border-[#D0FAE580] bg-linear-to-br from-[#F3F4F6] via-[#FFFFFF] to-[#FEF2F2] shadow-[0px_25px_50px_-12px_#00BC7D1A]'>
+    <motion.div initial={{opacity:0 , y:30}} whileInView={{opacity:1, y:0}} viewport={{ once: false }}  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} className='relative rounded-[40px] border-px border-[#D0FAE580] bg-linear-to-br from-[#F3F4F6] via-[#FFFFFF] to-[#FEF2F2] shadow-[0px_25px_50px_-12px_#00BC7D1A]'>
         <div className='absolute w-80 h-80 rounded-full bg-linear-to-br from-[#A4F4CF66] to-transparent blur-3xl top-0 right-0 translate-x-1/4 -translate-y-1/2'>
 
         </div>
@@ -102,6 +105,6 @@ export default function AppForm() {
             </div>
         </div>
 
-    </div>
+    </motion.div>
   )
 }

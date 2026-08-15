@@ -1,9 +1,19 @@
 "use client";
 import Link from "next/link";
 // import { usePathname } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
-export default function Breadcrumbs({ customName,linkColor='text-[#FFFFFFB2]', pageColor ='text-white',linkColorHover= 'hover:text-white' }: { customName: string[],linkColor?:string , pageColor?:string ,linkColorHover?:string }) {
+export default function Breadcrumbs({
+  customName,
+  linkColor = "text-[#FFFFFFB2]",
+  pageColor = "text-white",
+  linkColorHover = "hover:text-white",
+}: {
+  customName: string[];
+  linkColor?: string;
+  pageColor?: string;
+  linkColorHover?: string;
+}) {
   // const pathname = usePathname();
   // console.log("pathname  : ", pathname);
   // let segments = pathname.split("/").filter((seg) => seg !== "");
@@ -14,9 +24,9 @@ export default function Breadcrumbs({ customName,linkColor='text-[#FFFFFFB2]', p
   //     if(isBrand)
   //      segments = ["brands", customName];
   //     else
-  //      segments = ["categories", customName]; 
+  //      segments = ["categories", customName];
   // }
-const segments = customName ;
+  const segments = customName;
   return (
     <nav className="flex items-center gap-2 text-sm leading-5 font-medium">
       <Link
@@ -38,9 +48,17 @@ const segments = customName ;
           <React.Fragment key={idx}>
             <span className={`${linkColor}`}>/</span>
             {isLast ? (
-              <span className={`${pageColor} capitalize`}>
-                {seg === "products" ? "All Products" : seg}
-              </span>
+              <Suspense
+                fallback={
+                  <span className={`${pageColor} capitalize`}>
+                    Loading...
+                  </span>
+                }
+              >
+                <span className={`${pageColor} capitalize`}>
+                  {seg === "products" ? "All Products" : seg}
+                </span>
+              </Suspense>
             ) : (
               <Link
                 href={href}

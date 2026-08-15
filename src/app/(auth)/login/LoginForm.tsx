@@ -30,7 +30,6 @@ import {
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { cartContextType, useCartContext } from "@/app/_context/CartContext";
-import { getUserWishlist } from "@/api/services/route.services";
 // import * as z from 'zod'
 
 export default function LoginForm() {
@@ -56,9 +55,26 @@ export default function LoginForm() {
     });
     if (resp?.ok) {
       toast.success("Login Successful");
+      try {
+        const [cartData, wishlistData] = await Promise.all([
+          getNumOfICartitems(),
+          getNumOfIWishlist(),
+        ]);
+
+        const cartCount = Array.isArray(cartData?.products)
+          ? cartData.products.length
+          : 0;
+        const wishlistCount = Array.isArray(wishlistData) ? wishlistData.length : 0;
+
+        updateNumOfCartItems(cartCount);
+        updateNumOfWishlistItems(wishlistCount);
+      } catch (error) {
+        console.error("Error updating cart/wishlist numbers:", error);
+      }
       setTimeout(() => {
         router.push("/");
       }, 1000);
+      
     } else {
       toast.error("Email Or Password Is Incorrect");
     }

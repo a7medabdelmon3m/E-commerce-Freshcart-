@@ -18,7 +18,7 @@ export default async function Checkout() {
             <EmptyMsg
               icon={<FaExclamationTriangle />}
               title="Your cart is empty"
-              desc={<p>Add some items to your cart before checking out.</p>}
+              desc={<span>Add some items to your cart before checking out.</span>}
               iconStylings="w-24 h-24 rounded-full bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center mx-auto mb-6 text-4xl text-amber-500"
             />
             

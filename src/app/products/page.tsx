@@ -20,6 +20,7 @@ export default async function page({
   searchParams: Promise<{ brand?: string; category?: string ; subcategory?: string }>;
 }) {
   const { brand, category ,subcategory } = (await searchParams) || null;
+  const section = brand ? 'brands' :  'categories'
   // const params = await  searchParams || null ;
   // console.log('searchParams : ' ,params);
 
@@ -27,12 +28,14 @@ export default async function page({
   const myCategory = category ? await getSpecificCategory(category) : null;
   const mySubcategory = subcategory ? await getSpecificSubcategory(subcategory) : null;
   const wishlist = await getUserWishlist()
-  console.log('wishlist : ' , wishlist);
+  // console.log('wishlist : ' , wishlist);
   
 
   const name = myBrand ? myBrand.name : myCategory ? myCategory.name :  mySubcategory ? mySubcategory.name : null;
 
   // await getFillteredProducts({brand:brand})
+  // console.log('name : '  , name);
+  
 
   const allproducts = await getFillteredProducts({ brand: brand, category:category ,subcategory:subcategory });
 
@@ -53,9 +56,7 @@ export default async function page({
         }
         brand={myBrand ? myBrand : myCategory ? myCategory : undefined}
         icon={myBrand || myCategory ? undefined : mySubcategory ? <FaFolderOpen/> : <FaBoxOpen />}
-        customName={
-          name ? ['products',name] : ['products']
-        }
+        customName={name ?  [section, name] : ['products']}
         isBrand={myBrand ? true : false}
       />
       <div className="container mx-auto px-4 py-8 space-y-6">

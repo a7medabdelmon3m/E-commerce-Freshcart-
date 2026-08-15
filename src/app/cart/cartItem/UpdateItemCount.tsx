@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import React from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa'
-import { updateCount } from '../cart.actions';
+import { updateCount } from '../../../api/actions/routea.ctions';
 export type prop = {
     isPlus?:boolean ;
     newCount:number ;

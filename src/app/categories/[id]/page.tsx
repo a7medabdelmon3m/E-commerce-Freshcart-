@@ -1,16 +1,16 @@
 import { productCategory, subCategoryType } from "@/api/types";
 import PageHeader from "@/app/_component/PageHeader";
-import React from "react";
+import React, { Suspense } from "react";
 import me from "../../../assets/image/01207179348.png";
 import Link from "next/link";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import SubCategoryCard from "../SubCategoryCard";
 import { getSpecificCategory, getSubCategory } from "@/api/services/route.services";
+import PageLoading from "@/app/_component/pageLoad";
 
 export default async function page({ params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id;
     // console.log('da el param ya 3am :' , id);
-    const allSubCategories =await getSubCategory(id)
     const category =await getSpecificCategory(id)
     
   // const x: productCategory = {
@@ -23,7 +23,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
     <div>
       <section>
         <PageHeader
-          customName={[category?.name as string]}
+          customName={[ 'categories' ,  category?.name as string ]}
           isBrand={false}
           brand={category}
           title={category?.name || 'product'}
@@ -38,8 +38,29 @@ export default async function page({ params }: { params: Promise<{ id: string }>
             <FaArrowLeftLong />
             Back to Categories
           </Link>
-          <h2 className="text-lg font-bold text-gray-900 mb-6 ">
-            {allSubCategories?.length} Subcategories in {category?.name}
+
+            <Suspense fallback={<PageLoading sectionName="Subcategories"/>}>
+              <SubcategoryList params={Promise.resolve({id})} categoryName={category?.name} />
+            </Suspense>
+          
+        </div>
+      </section>
+    </div>
+  );
+}
+
+async function SubcategoryList({params,categoryName}:{params:Promise<{id:string}> ,categoryName:string | undefined}) {
+  const {id} = await params ;
+
+  console.log('el id : ' , id);
+  
+    const allSubCategories =await getSubCategory(id as string)
+  
+
+  return(
+    <>
+      <h2 className="text-lg font-bold text-gray-900 mb-6 ">
+            {allSubCategories?.length} Subcategories in {categoryName}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {
@@ -47,8 +68,6 @@ export default async function page({ params }: { params: Promise<{ id: string }>
             }
             
           </div>
-        </div>
-      </section>
-    </div>
-  );
+    </>
+  )
 }

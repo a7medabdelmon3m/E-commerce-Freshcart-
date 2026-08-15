@@ -1,6 +1,6 @@
-import { id } from "zod/locales";
 import { decodeAuthanticationUserToken } from "@/app/utils";
 import {
+  addresseTaye,
   cartItemType,
   orderType,
   productBrand,
@@ -10,7 +10,6 @@ import {
   subCategoryType,
   wishListType,
 } from "../types";
-import { log } from "console";
 
 export async function getAllProducts(): Promise<productType[] | undefined> {
   try {
@@ -233,6 +232,34 @@ export async function getUserWishlist(): Promise<wishListType[] | undefined> {
           },
         },
       );
+
+      const finalData = await resp.json();
+
+      // console.log("el cart items :", finalData.data);
+
+      return finalData.data;
+    } catch (error) {
+      console.log("error : ", error);
+    }
+  } else {
+    return undefined;
+  }
+}
+export async function getUserAddresses(): Promise<addresseTaye[] | undefined> {
+  const tokenValue = (await decodeAuthanticationUserToken())?.token;
+  if (tokenValue) {
+    // console.log('da el token ',tokenValue);
+
+    try {
+      const resp = await fetch(
+        `https://ecommerce.routemisr.com/api/v1/addresses`,
+        {
+          headers: { token: tokenValue },
+          next: {
+            tags: ["getUserAddresses"],
+          },
+        },
+      );
       const finalData = await resp.json();
       // console.log("el cart items :", finalData.data);
       return finalData.data;
@@ -241,5 +268,58 @@ export async function getUserWishlist(): Promise<wishListType[] | undefined> {
     }
   } else {
     return undefined;
+  }
+}
+
+interface returnedType<T> {
+  success: boolean;
+  error?: string;
+  data?: T;
+}
+export async function dynamicApiService<T = unknown>(
+  endPoint: string,
+  isTokenNeeded: boolean = true,
+  isMetaDataNeeded: boolean = false,
+  tags: string[],
+): Promise<returnedType<T> | undefined> {
+  const tokenValue = (await decodeAuthanticationUserToken())?.token;
+
+  if (!tokenValue && isTokenNeeded) {
+    return { success: false, error: "Session is ended!" };
+  }
+
+  // console.log('da el token ',tokenValue);
+
+  try {
+    const headers: HeadersInit = {
+      ...(tokenValue ? { token: tokenValue } : {}),
+    };
+
+    const resp = await fetch(endPoint, {
+      headers,
+      next: {
+        tags: tags,
+      },
+    });
+
+    const finalData = await resp.json().catch(() => null);
+
+    if (resp.ok) {
+      return {
+        success: true,
+        data: isMetaDataNeeded ? finalData : finalData.data,
+      };
+    }
+
+    return {
+      success: false,
+      error: finalData || "Failed Action!",
+    };
+  } catch (error) {
+    console.log("error : ", error);
+    return {
+      success: false,
+      error: "Network error or invalid server URL",
+    };
   }
 }

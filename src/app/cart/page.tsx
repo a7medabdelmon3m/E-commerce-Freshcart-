@@ -2,20 +2,14 @@ import Link from "next/link";
 import React from "react";
 import {
   FaBoxOpen,
-  FaCheck,
   FaLock,
-  FaMinus,
-  FaPlus,
   FaShoppingBag,
   FaShoppingCart,
   FaTag,
   FaTruck,
 } from "react-icons/fa";
-import me from "../../assets/image/01207179348.png";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { MdDelete } from "react-icons/md";
-import { FaArrowRightLong, FaShieldHalved } from "react-icons/fa6";
+import {  FaShieldHalved } from "react-icons/fa6";
 import CartItem from "./cartItem/CartItem";
 import { getCartItems } from "@/api/services/route.services";
 import ClearAllItems from "./ClearAllItems";
@@ -177,9 +171,9 @@ export default async function Cart() {
               <EmptyMsg
                 icon={<FaBoxOpen />}
                 title="Your cart is empty"
-                desc={<p>Looks like you haven&apos;t added anything to your cart yet.
+                desc={<span>Looks like you haven&apos;t added anything to your cart yet.
                         <br />
-                        Start exploring our products!</p>} 
+                        Start exploring our products!</span>} 
               />
               <div className="mt-12 pt-8 border-t border-gray-200">
                 <p className="text-sm text-gray-400 mb-4">Popular Categories</p>

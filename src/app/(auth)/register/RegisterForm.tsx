@@ -9,11 +9,11 @@ import { registerSchema } from "./register.schema";
 import { type } from "os";
 import { registerType } from "./register.type";
 import { registerAction } from "./register.action";
-import { toast } from "sonner";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import { FaFacebook, FaGoogle, FaSpinner, FaUserPlus } from "react-icons/fa";
 import Link from "next/link";
+import { toast } from "react-toastify";
 // import * as z from 'zod'
 function getStrength(password:string){
 let score = 0 ; 
@@ -51,28 +51,12 @@ export default function RegisterForm() {
     const isSuccess = await registerAction(data);
 
     if (isSuccess) {
-      toast.success("Account Is Created successfully", {
-        position: "top-right",
-        duration: 3000,
-        style: {
-          background: "green",
-          color: "white",
-          border: "1px solid red",
-        },
-      });
+      toast.success("Account Is Created successfully");
       setTimeout(() => {
         router.push("/login");
       }, 3000);
     } else {
-      toast.error("Account Already Exist", {
-        position: "top-right",
-        duration: 3000,
-        style: {
-          background: "red",
-          color: "white",
-          border: "1px solid yellow",
-        },
-      });
+      toast.error("Account Already Exist");
     }
   }
   const passwordValue = watch("password", ""); 

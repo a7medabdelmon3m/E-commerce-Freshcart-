@@ -8,6 +8,7 @@ import { getAllBrands, getAllCategories } from "@/api/services/route.services";
 import FilterResult from "./FilterResult";
 import { BiLoaderCircle } from "react-icons/bi";
 import FilterTags from "./FilterTags";
+import FilterBtn from "./FilterBtn";
 
 export default async function Search({
   searchParams,
@@ -20,10 +21,9 @@ export default async function Search({
   const suspenseKey = JSON.stringify(params);
 
   // console.log("suspenseKey", suspenseKey);
-  const allCategories = await getAllCategories() ;
-  const allBrands = await getAllBrands() ;
+  const allCategories = await getAllCategories();
+  const allBrands = await getAllBrands();
   // console.log('allCategories' , getAllCategories , '/n' , 'allBrands' , allBrands );
-  
 
   return (
     <section className="min-h-300 pb-8 bg-[#F9FAFB80] space-y-8">
@@ -53,32 +53,36 @@ export default async function Search({
         </div>
       </div>
       <div className="container mx-auto px-4">
-        <div className="flex gap-8">
-          <div className="">
-            <FilterationSide categories={allCategories} brands={allBrands}/>
+        <div className="flex gap-8 ">
+          <div className="hidden lg:block w-64 shrink-0 sticky top-24 self-start h-fit">
+            <FilterationSide categories={allCategories} brands={allBrands} />
           </div>
 
           <div className="space-y-6 flex-1">
             <div className="flex justify-between ">
-              <LayoutSwitcher />
+              <div className="flex items-center gap-4">
+                <FilterBtn brands={allBrands} categories={allCategories} />
+                <LayoutSwitcher />
+              </div>
+
               <Select />
             </div>
-            <FilterTags allCategories={allCategories} allbrands={allBrands}/>
+            <FilterTags allCategories={allCategories} allbrands={allBrands} />
             <Suspense
               key={suspenseKey}
               fallback={
                 <div className="min-h-[60vh] px-x flex items-center justify-center">
                   <div className="text-center space-y-2">
                     <BiLoaderCircle className="text-6xl text-main-color animate-spin mx-auto" />
-                    <h3 className="text-xl  text-text-color">Searching Products...</h3>
+                    <h3 className="text-xl  text-text-color">
+                      Searching Products...
+                    </h3>
                   </div>
                 </div>
               }
             >
               <FilterResult params={params} />
             </Suspense>
-
-            
           </div>
         </div>
       </div>

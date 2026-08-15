@@ -1,12 +1,14 @@
 import Link from "next/link";
 import React from "react";
+import { FooterLinkItem } from "../footer/Footer";
 
 export default function FooterList({
   listHeader,
   listItems,
+  
 }: {
   listHeader: string;
-  listItems: string[];
+  listItems: FooterLinkItem[];
 }) {
   return (
     <div className="flex flex-col gap-5">
@@ -16,8 +18,8 @@ export default function FooterList({
       <ul className=" flex flex-col gap-3 text-[14px] text-[#99A1AF] leading-5 font-medium ">
         {listItems.map((item,idx) => (
           <li key={idx} className="pt-0.75 pb-px  ">
-            <Link className="hover:text-main-color" href="#">
-              {item}
+            <Link className="hover:text-main-color" href={item.link}>
+              {item.text}
             </Link>
           </li>
         ))}

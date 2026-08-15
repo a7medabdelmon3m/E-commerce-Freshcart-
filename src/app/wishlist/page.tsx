@@ -21,7 +21,7 @@ export default async function Page() {
           <div className="max-w-md text-center">
             <EmptyMsg
               title="Your wishlist is empty"
-              desc={<>Browse products and save your favorites here.</>}
+              desc={<span>Browse products and save your favorites here.</span>}
               icon={<FaRegHeart className="text-3xl text-gray-400" />}
               buttonName={ <> Browse Products <FaArrowRightLong className="text-sm inline-block ml-2" /> </> }
               iconStylings="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-6"

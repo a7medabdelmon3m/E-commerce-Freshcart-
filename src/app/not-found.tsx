@@ -1,5 +1,7 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaArrowLeft, FaCarrot, FaLemon, FaSeedling } from "react-icons/fa";
 import { FaAppleWhole, FaCartShopping, FaHouse } from "react-icons/fa6";
@@ -12,6 +14,7 @@ const linkItems = [
 ]
 
 export default function Notfound() {
+  const router = useRouter()
   return (
     <section className="min-h-screen bg-[#fafbfc] flex justify-center items-center py-16 overflow-hidden relative ">
       <div className="container mx-auto px-4">
@@ -78,7 +81,7 @@ export default function Notfound() {
                 <FaHouse className="group-hover:scale-110 transition-transform duration-300"/>
                 Go to Homepage
             </Link>
-            <Button className="h-auto! group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 py-4 px-8! rounded-2xl font-bold text-lg transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200 hover:-translate-y-1">
+            <Button onClick={() => {router.back()}} className="h-auto! group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 py-4 px-8! rounded-2xl font-bold text-lg transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200 hover:-translate-y-1">
                 <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-300"/>
                 Go Back
             </Button>

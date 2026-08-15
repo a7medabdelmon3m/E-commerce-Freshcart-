@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import {
+  FaBox,
   FaBoxOpen,
   FaCalendar,
   FaClock,
@@ -12,15 +13,16 @@ import {
   FaReceipt,
   FaShoppingBag,
 } from "react-icons/fa";
-import { FaLocationDot, FaLocationPin } from "react-icons/fa6";
+import { FaBagShopping, FaLocationDot, FaLocationPin } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { IoIosArrowUp } from "react-icons/io";
 import OrderItem from "./OrderItem";
 import { getUserOrders } from "@/api/services/route.services";
+import EmptyMsg from "../_component/EmptyMsg";
 
 export default async function Orders() {
-   const resp =  await getUserOrders()
-   const shipingDetails = resp?.[0].shippingAddress ;
+  const resp = await getUserOrders();
+  const shipingDetails = resp?.[0]?.shippingAddress;
   return (
     <section>
       <div className="container mx-auto px-4 py-8">
@@ -61,11 +63,36 @@ export default async function Orders() {
             </div>
           </div>
         </div>
+        {!resp ||
+          (resp?.length === 0 && (
+            <div className="flex justify-center items-center">
+              <EmptyMsg 
+              iconStylings="w-24 h-24 rounded-2xl flex items-center justify-center bg-gray-200  mx-auto text-4xl text-gray-300"
+              icon={<FaBoxOpen />}
+              buttonName={
+                <>
+                  <FaBagShopping color="white" /> Start Shopping
+                </>
+              }
+              desc={
+                <span>
+                  When you place orders, they&apos;ll appear here so you can track
+                  them.
+                </span>
+              }
+              title="No orders yet"
+            />
+            </div>
+            
+          ))}
         <div className="space-y-4">
-            {
-                resp?.map(item =>  <OrderItem key={item.id} orderDetails= {item}  shipingDetails={shipingDetails} />)
-            }
-           
+          {resp?.map((item) => (
+            <OrderItem
+              key={item.id}
+              orderDetails={item}
+              shipingDetails={shipingDetails}
+            />
+          ))}
         </div>
       </div>
     </section>

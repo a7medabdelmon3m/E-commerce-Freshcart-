@@ -11,7 +11,7 @@ import Link from "next/link";
 import React, { useState, useTransition } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
-import { addToCart, deleteWishListItem } from "../cart/cart.actions";
+import { addToCart, deleteWishListItem } from "../../api/actions/routea.ctions";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { FaCheck, FaHeart, FaSpinner } from "react-icons/fa";

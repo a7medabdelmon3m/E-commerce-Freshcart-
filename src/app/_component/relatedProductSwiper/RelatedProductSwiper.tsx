@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { productType} from "@/api/types";
+import { productType, wishListType} from "@/api/types";
 // import { Button } from "@/components/ui/button";
 import ProductCard from "@/app/_component/productCard/ProductCard";
 // import me from '../../../assets/image/01207179348.png'
@@ -41,7 +41,7 @@ import ProductCard from "@/app/_component/productCard/ProductCard";
 
 // import Image from 'next/image';
 
-export default function RelatedProductSwiper({listOfRelatedProducts}:{listOfRelatedProducts:productType[]}) {
+export default function RelatedProductSwiper({listOfRelatedProducts,wishlist}:{listOfRelatedProducts:productType[] ,wishlist:wishListType[]}) {
     // console.log('da el list of products ' , listOfRelatedProducts);
     
   return (
@@ -83,7 +83,7 @@ export default function RelatedProductSwiper({listOfRelatedProducts}:{listOfRela
           <SwiperSlide key={idx}>
              
              
-                <ProductCard product={product} key={idx}/>
+                <ProductCard product={product} wishlist={wishlist} key={idx}/>
              
           </SwiperSlide>
         ))}

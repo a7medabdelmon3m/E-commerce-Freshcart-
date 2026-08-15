@@ -11,10 +11,12 @@
   --color-text-color:#6A7282 ;
   --font-exo:var(--font-exo);
   --font-sans:var(--font-exo);
+  --animate-fade-up: fadeUpAnim 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-html, body {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 
@@ -63,3 +65,35 @@ html, body {
   }
 }
 
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+@keyframes fadeUpAnim {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.initial-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.is-visible .swiper-slide-active .initial-hidden {
+  animation: var(--animate-fade-up);
+}

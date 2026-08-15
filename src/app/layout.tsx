@@ -10,7 +10,7 @@ import { FaArrowRotateLeft, FaShieldHalved } from "react-icons/fa6";
 import { BiSupport } from "react-icons/bi";
 import SessionProviderWrapper from "./_component/sessionProviderWrapper/SessionProviderWrapper";
 import CartContextProvider from "./_context/CartContext";
-import { getCartItems } from "@/api/services/route.services";
+import { getAllBrands, getAllCategories, getCartItems } from "@/api/services/route.services";
 import { getNumOfIWishlist } from "./(auth)/login/login.action";
 
 const exo = Exo({
@@ -35,7 +35,7 @@ export default async function RootLayout({
   const cartItems = await getCartItems()
    const whishlistItems = await getNumOfIWishlist()
   //  console.log('whishlistItems : ' , whishlistItems);
-   
+
   return (
     <html lang="en">
       <body
@@ -46,7 +46,7 @@ export default async function RootLayout({
           <SessionProviderWrapper>
             <SidebarProvider defaultOpen={false}>
               <div className="flex flex-col w-full ">
-                <Navbar></Navbar>
+                <Navbar ></Navbar>
                 <Toaster />
                 <main className="w-full">{children}</main>
                 <section className="border-y border-main-color-subtle bg-[#F0FDF4]">

@@ -9,9 +9,11 @@ export interface cartContextType{
   updateNumOfCartItems:(num:number)=>void
   numberOfWishlistItems:number;
   updateNumOfWishlistItems:(num:number)=>void
+  isGrid:boolean,
+  updateDisplayLayout:(val:boolean) => void
 
 }
- export const cartContext = createContext<cartContextType>({numberOfCartItems :0 ,updateNumOfCartItems(){} ,numberOfWishlistItems:0 ,updateNumOfWishlistItems(){}  })
+ export const cartContext = createContext<cartContextType>({numberOfCartItems :0 ,updateNumOfCartItems(){} ,numberOfWishlistItems:0 ,updateNumOfWishlistItems(){} ,isGrid:false,updateDisplayLayout(){}  })
 export default function CartContextProvider({children , cartItems , whishlistItems}:{children:ReactNode,cartItems:cartItemType| undefined | Error ,whishlistItems:wishListType[] | undefined | Error }) {
   
   const [numberOfCartItems, setnumberOfCartItems] = useState( ()=> {
@@ -28,10 +30,15 @@ export default function CartContextProvider({children , cartItems , whishlistIte
       
     }
 
+    const [isGrid, setIsGrid] = useState(false)
+     function updateDisplayLayout(val:boolean){
+          setIsGrid(val)
+      }
+
     
    
   return (
-    <cartContext.Provider value={{numberOfCartItems,updateNumOfCartItems,numberOfWishlistItems ,updateNumOfWishlistItems}}>
+    <cartContext.Provider value={{numberOfCartItems,updateNumOfCartItems,numberOfWishlistItems ,updateNumOfWishlistItems , isGrid ,updateDisplayLayout}}>
     {
         children
     }

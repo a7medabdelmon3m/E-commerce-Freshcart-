@@ -24,7 +24,7 @@ export default function EmptyMsg({
   customButton,
 }: prop) {
   return (
-    <div>
+    <div  className="flex flex-col justify-center items-center max-w-sm text-center">
       <div className="relative mb-8">
         <div className={iconStylings}>{icon}</div>
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-gray-100 rounded-full blur-md"></div>

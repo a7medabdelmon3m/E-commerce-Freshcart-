@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { MdDelete } from "react-icons/md";
-import { deleteCartItem } from "../cart.actions";
+import { deleteCartItem } from "../../../api/actions/routea.ctions";
 import { cartContextType, useCartContext } from "@/app/_context/CartContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";

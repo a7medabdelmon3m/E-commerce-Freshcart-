@@ -1,4 +1,3 @@
-import next from "next";
 import { decode } from "next-auth/jwt";
 import { cookies } from "next/headers";
 

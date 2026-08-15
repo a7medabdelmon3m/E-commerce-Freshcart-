@@ -12,6 +12,7 @@ export type prop = {
   label: string;
   id?: string;
   isPassword?: boolean;
+  required?: boolean;
 };
 export default function DynamicFeild({
   control,
@@ -21,6 +22,7 @@ export default function DynamicFeild({
   placeHolder,
   id,
   isPassword = false,
+  required = false
 }: prop) {
     const [isShown, setisShown] = useState(false)
   return (
@@ -48,6 +50,7 @@ export default function DynamicFeild({
                 placeholder={placeHolder}
                 autoComplete="off"
                 type={(isShown && isPassword) ? 'text' : type}
+                required={required}
               />
               {isPassword && (
                 <div onClick={() => setisShown(!isShown)} className="absolute top-4.5 right-4 text-[#99A1AF] cursor-pointer">

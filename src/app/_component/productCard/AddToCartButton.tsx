@@ -1,6 +1,6 @@
 "use client";
 import { cartContextType, useCartContext } from "@/app/_context/CartContext";
-import { addToCart } from "@/app/cart/cart.actions";
+import { addToCart, updateCount } from "@/api/actions/routea.ctions";
 import { Button } from "@/components/ui/button";
 import { Span } from "next/dist/trace";
 import React, { ReactNode, useState } from "react";
@@ -11,6 +11,7 @@ type prop = {
   id: string;
   children: ReactNode;
   successState?: string;
+  quantity?:number
 };
 
 export default function AddToCartButton({
@@ -18,6 +19,7 @@ export default function AddToCartButton({
   className = "",
   id,
   children,
+  quantity
 }: prop) {
   const [isLoading, setisLoading] = useState(false);
   const [isSuccess, setisSuccess] = useState(false);
@@ -26,8 +28,9 @@ export default function AddToCartButton({
   async function handleAddToCart() {
     if (isLoading) return;
     setisLoading(true);
+    
     try {
-      const numOfCartItems = await addToCart(id);
+      const numOfCartItems =   await addToCart(id);
       setisLoading(false);
       setisSuccess(true);
       setTimeout(() => {

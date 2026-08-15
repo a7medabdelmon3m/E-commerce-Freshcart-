@@ -1,30 +1,43 @@
 "use client";
+import { dynamicApiAction } from "@/api/actions/routea.ctions";
 import {
   forgetPasswordSchema,
   resetPasswordSchema,
   verifyCodeSchema,
 } from "@/app/forget-password/forgetPassword.schemes";
-import { forgetPasswordType ,verifyCodeType ,resetPasswordType } from "@/app/forget-password/forgetPassword.types";
+import {
+  forgetPasswordType,
+  verifyCodeType,
+  resetPasswordType,
+} from "@/app/forget-password/forgetPassword.types";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import {
   FaArrowLeft,
+  FaCheck,
   FaEnvelope,
   FaEye,
   FaEyeSlash,
   FaKey,
   FaLock,
+  FaSpinner,
 } from "react-icons/fa";
 import { FaShieldHalved } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import { da } from "zod/locales";
 
 type prop = {
   formType?: "forget-password" | "verify-code" | "reset-password";
   defaultValues?: any;
+  onStepChange?: (
+    step: "forget-password" | "verify-code" | "reset-password",
+  ) => void;
 };
 
 export default function ForgetPasswordForm({
@@ -32,10 +45,14 @@ export default function ForgetPasswordForm({
   defaultValues = {
     email: "",
   },
+  onStepChange,
 }: prop) {
   // {
   //   formType === "forget-password" ? "" : formType === "verify-code" ? "" : "";
   // }
+  const [email, setEmail] = useState("");
+  const [isReseted, setIsReseted] = useState(false);
+  const router = useRouter();
   const selectedSchema =
     formType === "forget-password"
       ? forgetPasswordSchema
@@ -43,8 +60,10 @@ export default function ForgetPasswordForm({
         ? verifyCodeSchema
         : resetPasswordSchema;
 
-  
-        
+  function handleNavigation() {
+    router.push(`/login`);
+  }
+
   const {
     control,
     handleSubmit,
@@ -54,9 +73,112 @@ export default function ForgetPasswordForm({
     resolver: zodResolver(selectedSchema),
   });
 
-  const mySubmit = (data: forgetPasswordType | verifyCodeType | resetPasswordType) => {
-    console.log("forget password data : ", data);
+  const mySubmit = async (
+    data: forgetPasswordType | verifyCodeType | resetPasswordType,
+  ) => {
+    let payload: Record<string, any> = { ...data };
+
+    if (formType === "forget-password") {
+      const emailValue = (data as forgetPasswordType).email;
+      setEmail(emailValue);
+      payload = { ...data };
+    }
+
+    if (formType === "reset-password") {
+      payload = {
+        ...(data as resetPasswordType),
+        email,
+      };
+      delete payload.confirm_password;
+    }
+
+    console.log("email : ", email);
+    console.log("data : ", payload);
+
+    const calledEndPoint =
+      formType === "forget-password"
+        ? `https://ecommerce.routemisr.com/api/v1/auth/forgotPasswords`
+        : formType === "verify-code"
+          ? `https://ecommerce.routemisr.com/api/v1/auth/verifyResetCode`
+          : `https://ecommerce.routemisr.com/api/v1/auth/resetPassword`;
+    const method = formType === "reset-password" ? "PUT" : "POST";
+    const successMsg =
+      formType === "forget-password"
+        ? "Reset Code Sent To Your Email Successfully!"
+        : formType === "verify-code"
+          ? "Code Verified!"
+          : "Password Reset Successfully!";
+
+    const errorMsg =
+      formType === "forget-password"
+        ? "Failed To Send Verification Code!"
+        : formType === "verify-code"
+          ? "Failed To Verify Code "
+          : "Failed To Reset Password";
+    const resp = await dynamicApiAction(
+      calledEndPoint,
+      data,
+      method,
+      undefined,
+      false,
+    );
+    console.log("resp : ", resp);
+
+    if (resp.success) {
+      toast.success(resp?.data?.message || successMsg);
+      if (formType === "forget-password") {
+        onStepChange?.("verify-code");
+      } else if (formType === "verify-code") {
+        onStepChange?.("reset-password");
+      } else {
+        setIsReseted(true);
+      }
+    } else {
+      const errorMessage =
+        typeof resp.error === "object"
+          ? (resp.error as any)?.message || errorMsg
+          : resp.error || errorMsg;
+      toast.error(errorMessage);
+    }
   };
+  if (isReseted) {
+    return (
+      <div className="isReseted">
+        <div className="w-full">
+          <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-12">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center mb-4">
+                <span className="text-3xl font-bold text-green-600">
+                  Fresh
+                  <span className="text-gray-800">Cart</span>
+                </span>
+              </div>
+            </div>
+            <div className="text-center space-y-6">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto text-green-600 text-3xl">
+                <FaCheck />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Password Reset!
+                </h2>
+                <p className="text-gray-600">
+                  Your password has been successfully reset. You can now sign in
+                  with your new password.
+                </p>
+              </div>
+              <Button
+                onClick={handleNavigation}
+                className="h-auto! w-full bg-green-600 text-white py-3 px-4 rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl"
+              >
+                Back to Sign In
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="bg-white space-y-8 rounded-2xl p-6 lg:p-12 shadow-[0px_8px_10px_-6px_#0000001A,0px_20px_25px_-5px_#0000001A]">
       <div className="text-center">
@@ -74,7 +196,7 @@ export default function ForgetPasswordForm({
           {formType === "forget-password"
             ? "No worries, we'll send you a reset code"
             : formType === "verify-code"
-              ? "Enter the 6-digit code sent to usama.route@gmail.com"
+              ? `Enter the 6-digit code sent to ${email}`
               : "Your new password must be different from previous passwords"}
         </p>
       </div>
@@ -127,19 +249,18 @@ export default function ForgetPasswordForm({
             <ForgetPasswordFeild
               control={control}
               label="Verification Code"
-              name="code"
+              name="resetCode"
               placeholder="••••••"
               id="_code"
               type="text"
             />
-            
           </div>
         ) : (
           <>
             <ForgetPasswordFeild
               control={control}
               label="New Password"
-              name="new_password"
+              name="newPassword"
               placeholder="Enter new password"
               id="_new_password"
               type="password"
@@ -155,20 +276,45 @@ export default function ForgetPasswordForm({
           </>
         )}
 
-        {formType === 'verify-code' && 
+        {formType === "verify-code" && (
           <div className="text-center">
             <p className="text-sm text-gray-500">
-              Didn&apos;t receive the code?<Button className=" h-auto! p-0! text-green-600 hover:text-primary-700 font-semibold transition-colors">Resend Code</Button>
+              Didn&apos;t receive the code?
+              <Button className=" h-auto! p-0! text-green-600 hover:text-green-700 font-semibold transition-colors">
+                Resend Code
+              </Button>
             </p>
           </div>
-        }
+        )}
 
-        <Button className="h-auto! w-full rounded-xl py-3 px-4 bg-main-color hover:bg-main-color-hover transition-colors duration-100 text-white font-semibold text-sm lg:text-lg leading-7 shadow-[0px_4px_6px_-4px_#0000001A,0px_10px_15px_-3px_#0000001A]">
-          {formType === "forget-password"
-            ? "Send Reset Code"
-            : formType === "verify-code"
-              ? "Verify Code"
-              : "Reset Password"}
+        <Button
+          disabled={isSubmitting}
+          className="h-auto! w-full rounded-xl py-3 px-4 bg-main-color hover:bg-main-color-hover transition-colors duration-100 text-white font-semibold text-sm lg:text-lg leading-7 shadow-[0px_4px_6px_-4px_#0000001A,0px_10px_15px_-3px_#0000001A]"
+        >
+          {formType === "forget-password" ? (
+            isSubmitting ? (
+              <>
+                <FaSpinner className="animate-spin" /> Sending Code
+              </>
+            ) : (
+              "Send Reset Code"
+            )
+          ) : formType === "verify-code" ? (
+            isSubmitting ? (
+              <>
+                <FaSpinner className="animate-spin" /> Verifying...
+              </>
+            ) : (
+              "Verify Code"
+            )
+          ) : isSubmitting ? (
+            <>
+              {" "}
+              <FaSpinner className="animate-spin" /> Resetting Password...
+            </>
+          ) : (
+            "Reset Password"
+          )}
         </Button>
         {formType === "forget-password" ? (
           <div className="text-center pt-[0.5px] pb-0.75">
@@ -242,19 +388,18 @@ function ForgetPasswordFeild({
           </FieldLabel>
           <div className="relative">
             <Input
-              className={` ${name === "code" ? "px-3" : "pl-12"}  py-3   h-auto ${type === "password" ? "pr-12" : "pr-4"} ${name === "code" ? "placeholder:text-2xl placeholder:font-medium placeholder:text-[#36415380] placeholder:text-center  text-center text-2xl tracking-[0.5em] font-mono" : "placeholder:text-xs lg:placeholder:text-[16px]"}   rounded-xl border border-[#E5E7EB] text-[16px]! leading-6! font-medium! focus:border-main-color`}
+              className={` ${name === "resetCode" ? "px-3" : "pl-12"}  py-3   h-auto ${type === "password" ? "pr-12" : "pr-4"} ${name === "resetCode" ? "placeholder:text-2xl placeholder:font-medium placeholder:text-[#36415380] placeholder:text-center  text-center text-2xl tracking-[0.5em] font-mono" : "placeholder:text-xs lg:placeholder:text-[16px]"}   rounded-xl border border-[#E5E7EB] text-[16px]! leading-6! font-medium! focus:border-main-color`}
               {...field}
               id={id || String(name)}
               aria-invalid={fieldState.invalid}
               placeholder={placeholder}
               autoComplete="off"
               type={isShown && type === "password" ? "text" : type}
-              maxLength={name === 'code' ? 6 : 10000}
+              maxLength={name === "resetCode" ? 6 : 10000}
             />
             <div className="absolute top-4.5 left-4 text-[#99A1AF] cursor-pointer">
-              {name === 'code' ? <FaShieldHalved/>: <FaEnvelope />}
-                
-              </div>
+              {name === "resetCode" ? <FaShieldHalved /> : <FaEnvelope />}
+            </div>
 
             {type === "password" && (
               <div
