@@ -62,7 +62,7 @@ export async function createOnlneOrder(
       );
       if (resp.ok) {
         const finalData = await resp.json();
-        revalidatePath("/cart");
+        revalidatePath("/orders");
         // console.log("el online order tam b naga7: ", finalData);
         return finalData.session.url;
         // return finalData.numOfCartItems;

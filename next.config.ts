@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async redirects() {
+    return [
+      {
+        source: '/orders',
+        destination: '/allorders', 
+        permanent: true,
+      },
+    ];
+  },
   reactCompiler: true,
   images: {
     remotePatterns: [

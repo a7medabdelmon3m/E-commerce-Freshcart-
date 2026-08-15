@@ -93,7 +93,7 @@ export default function ForgetPasswordForm({
     }
 
     console.log("email : ", email);
-    console.log("data : ", payload);
+    console.log("data : ", data);
 
     const calledEndPoint =
       formType === "forget-password"
@@ -117,7 +117,7 @@ export default function ForgetPasswordForm({
           : "Failed To Reset Password";
     const resp = await dynamicApiAction(
       calledEndPoint,
-      data,
+      payload,
       method,
       undefined,
       false,
@@ -329,6 +329,7 @@ export default function ForgetPasswordForm({
         ) : formType === "verify-code" ? (
           <div className="text-center pt-[0.5px] pb-0.75">
             <Link
+              onClick={() => onStepChange?.("forget-password")}
               className="inline-flex gap-2 items-center text-sm leading-5 font-medium text-text-color"
               href={`/forget-password`}
             >
